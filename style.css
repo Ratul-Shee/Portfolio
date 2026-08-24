@@ -3258,12 +3258,12 @@ h1, h2, h3, h4 {
     print-color-adjust: exact !important;
   }
 
-  /* Completely remove all web background canvases, auroras, navbars, and sections */
+  /* Completely remove all web background canvases, auroras, navbars, and website sections */
   #net-canvas, #confettiCanvas, .aurora-container, .aurora-blob,
-  #nav, .nav, footer, .footer, .scroll-bar, .toast-container,
+  #nav, .nav, header.nav, footer, .footer, .scroll-bar, .toast-container,
   .theme-popup, .cmd-palette-backdrop, #projectModal,
   .resume-topbar, .modal-close-btn,
-  header, main, section:not(.resume-section), article {
+  main, section:not(.resume-section), article {
     display: none !important;
   }
 
@@ -3318,12 +3318,17 @@ h1, h2, h3, h4 {
   }
 
   .resume-header {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
     border-bottom: 2px solid #059669 !important;
     padding-bottom: 8px !important;
     margin-bottom: 12px !important;
   }
 
   .resume-name {
+    display: block !important;
+    visibility: visible !important;
     font-size: 24pt !important;
     color: #0f172a !important;
     font-weight: 800 !important;
@@ -3332,6 +3337,8 @@ h1, h2, h3, h4 {
   }
 
   .resume-title {
+    display: block !important;
+    visibility: visible !important;
     color: #059669 !important;
     font-size: 11.5pt !important;
     font-weight: 700 !important;
@@ -3339,6 +3346,8 @@ h1, h2, h3, h4 {
   }
 
   .resume-contact-line {
+    display: block !important;
+    visibility: visible !important;
     color: #475569 !important;
     font-size: 9pt !important;
     font-weight: 500 !important;
