@@ -3,7 +3,7 @@
    Themes, Pure Canvas Confetti, Web Audio Synth & MongoDB Integration
    ========================================================= */
 
-document.addEventListener('DOMContentLoaded', () => {
+function initPortfolioApp() {
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const API_BASE = '/api';
@@ -397,19 +397,24 @@ document.addEventListener('DOMContentLoaded', () => {
     step();
   }
 
-  let defaultTypedMsg = 'Full-Stack MERN Developer based in Chandannagar, India. Specializing in high-performance web systems and AI workflows.';
-
   function finishBoot() {
     if (!bootScreen) return;
     bootScreen.classList.add('done');
-    if (heroTyped) {
-      typeWriter(heroTyped, defaultTypedMsg, 20);
+    sessionStorage.setItem('ratul_boot_done', 'true');
+    if (heroTyped && !heroTyped.textContent) {
+      typeWriter(heroTyped, defaultTypedMsg, 16);
     }
   }
 
   if (bootSkipBtn) {
     bootSkipBtn.addEventListener('click', finishBoot);
   }
+  if (bootScreen) {
+    bootScreen.addEventListener('click', finishBoot);
+  }
+
+  // Guaranteed safety fallback to dismiss boot screen after 1.5s
+  setTimeout(finishBoot, 1500);
 
   function runBoot() {
     const hasBooted = sessionStorage.getItem('ratul_boot_done');
@@ -1559,4 +1564,11 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-});
+}
+
+// Execute safely across all browser lifecycle states
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initPortfolioApp);
+} else {
+  initPortfolioApp();
+}
