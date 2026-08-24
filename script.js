@@ -670,6 +670,16 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     });
   }
 
+  // Global escape key handler to close any active modal
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (projectModal && projectModal.classList.contains('open')) closeProjectModal();
+      if (resumeModal && resumeModal.classList.contains('open')) closeResumeModal();
+      if (themePopup && themePopup.classList.contains('open')) themePopup.classList.remove('open');
+      if (cmdBackdrop && cmdBackdrop.classList.contains('open')) closeCmdPalette();
+    }
+  });
+
   /* =========================================================
      11. Project Category Filtering
      ========================================================= */

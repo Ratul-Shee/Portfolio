@@ -500,6 +500,179 @@ h1, h2, h3, h4 {
 .resume-item-header span { font-family: var(--font-mono); font-size: 0.8rem; color: var(--neon-green); }
 
 /* =========================================================
+   Project Quick-Look Modal
+   ========================================================= */
+.project-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10006;
+  background: rgba(3, 6, 10, 0.85);
+  backdrop-filter: blur(14px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s var(--ease), visibility 0.3s var(--ease);
+}
+
+.project-modal-backdrop.open {
+  opacity: 1;
+  visibility: visible;
+  cursor: pointer;
+}
+
+.project-modal-card {
+  position: relative;
+  width: min(94vw, 760px);
+  max-height: 90vh;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.9), 0 0 40px var(--neon-green-glow);
+  transform: scale(0.95);
+  transition: transform 0.3s var(--ease-bounce);
+  cursor: default;
+}
+
+.project-modal-backdrop.open .project-modal-card {
+  transform: scale(1);
+}
+
+.modal-close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 25;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(6, 10, 18, 0.9);
+  border: 1px solid var(--border-light);
+  color: var(--text);
+  font-size: 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  backdrop-filter: blur(8px);
+  transition: 0.25s var(--ease);
+}
+
+.modal-close-btn:hover {
+  background: var(--neon-green);
+  color: #030f08;
+  border-color: var(--neon-green);
+  box-shadow: 0 0 15px var(--neon-green-glow);
+  transform: rotate(90deg);
+}
+
+.modal-image-wrap {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  overflow: hidden;
+  background: #040810;
+}
+
+.modal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-badge-pill {
+  position: absolute;
+  bottom: 14px;
+  left: 18px;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--neon-green);
+  background: rgba(6, 9, 15, 0.9);
+  border: 1px solid var(--neon-green);
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(8px);
+}
+
+.modal-body {
+  padding: 28px;
+}
+
+.modal-title {
+  font-size: 1.6rem;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.modal-subtitle {
+  color: var(--text-dim);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.modal-section {
+  margin-bottom: 20px;
+}
+
+.modal-section h4 {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--neon-blue);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 10px;
+}
+
+.modal-features-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.modal-features-list li {
+  font-size: 0.88rem;
+  color: var(--text-dim);
+  line-height: 1.5;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+}
+.modal-features-list li::before {
+  content: '▸';
+  color: var(--neon-green);
+}
+
+.modal-stack-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.modal-stack-tags span {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  background: var(--surface-hi);
+  border: 1px solid var(--border);
+  padding: 5px 12px;
+  border-radius: var(--radius-sm);
+  color: var(--neon-green);
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 28px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border);
+}
+
+.modal-actions .btn {
+  cursor: pointer;
+}
 
 /* =========================================================
    Command Palette Modal (Ctrl + K)
