@@ -940,23 +940,8 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   window.addEventListener('scroll', onScroll, { passive: true });
 
   /* =========================================================
-     17. Mobile Navigation Toggle
+     17. Mobile Navigation Helpers (Handled in Section 3)
      ========================================================= */
-  const navToggle = document.getElementById('navToggle');
-  const navLinks = document.getElementById('navLinks');
-
-  if (navToggle && navLinks) {
-    navToggle.addEventListener('click', () => {
-      const isOpen = navLinks.classList.toggle('open');
-      navToggle.setAttribute('aria-expanded', isOpen);
-    });
-    navLinks.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        navLinks.classList.remove('open');
-        navToggle.setAttribute('aria-expanded', false);
-      });
-    });
-  }
 
   /* =========================================================
      18. IntersectionObserver Scroll Reveal
