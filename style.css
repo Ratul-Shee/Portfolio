@@ -1440,45 +1440,6 @@ h1, h2, h3, h4 {
   transform: translateY(-4px);
 }
 
-/* Scroll Cue */
-.scroll-cue {
-  position: absolute;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  font-family: var(--font-mono);
-  font-size: 0.68rem;
-  color: var(--text-faint);
-  letter-spacing: 0.15em;
-}
-
-.scroll-line {
-  width: 1px;
-  height: 38px;
-  background: var(--border);
-  position: relative;
-  overflow: hidden;
-}
-
-.scroll-dot {
-  width: 100%;
-  height: 10px;
-  background: var(--neon-green);
-  position: absolute;
-  top: -10px;
-  animation: scrollAnim 2.2s ease-in-out infinite;
-}
-
-@keyframes scrollAnim {
-  0%   { top: -10px; opacity: 0; }
-  30%  { opacity: 1; }
-  100% { top: 38px; opacity: 0; }
-}
-
 /* =========================================================
    Sections General & Reveal
    ========================================================= */
