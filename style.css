@@ -3194,13 +3194,152 @@ h1, h2, h3, h4 {
   .btn-submit { padding: 12px; font-size: 0.82rem; }
 }
 
-/* Print Styles */
+/* Print Styles — Pixel-Perfect Clean CV Output (Zero Blank Pages) */
 @media print {
-  body * { visibility: hidden; }
-  #resumeModal, #resumeModal * { visibility: visible; }
-  #resumeModal { position: absolute; left: 0; top: 0; width: 100%; height: auto; background: #fff; color: #000; }
-  .resume-modal-card { box-shadow: none; border: none; background: #fff; color: #000; }
-  .resume-topbar { display: none; }
+  @page {
+    size: A4 portrait;
+    margin: 10mm 15mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 10pt !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Completely remove all web portfolio sections from the print document flow */
+  body > *:not(#resumeModal) {
+    display: none !important;
+  }
+
+  #resumeModal {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+    border: none !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+  }
+
+  .resume-modal-card {
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+    max-height: none !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    border: none !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    overflow: visible !important;
+    transform: none !important;
+  }
+
+  .resume-topbar, .modal-close-btn, #nav, .nav, footer, .footer, canvas, .aurora-container, .scroll-bar, .toast-container {
+    display: none !important;
+  }
+
+  .resume-sheet {
+    padding: 0 !important;
+    color: #111827 !important;
+  }
+
+  .resume-header {
+    border-bottom: 2px solid #111827 !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 14px !important;
+  }
+
+  .resume-name {
+    font-size: 22pt !important;
+    color: #111827 !important;
+    font-weight: 800 !important;
+    margin-bottom: 2px !important;
+  }
+
+  .resume-title {
+    color: #059669 !important;
+    font-size: 11pt !important;
+    font-weight: 600 !important;
+    margin-bottom: 4px !important;
+  }
+
+  .resume-contact-line {
+    color: #4b5563 !important;
+    font-size: 8.5pt !important;
+  }
+
+  .resume-section {
+    margin-bottom: 12px !important;
+    page-break-inside: avoid;
+  }
+
+  .resume-section h3 {
+    color: #1f2937 !important;
+    font-size: 10.5pt !important;
+    font-weight: 700 !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding-bottom: 3px !important;
+    margin-bottom: 6px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  .resume-section p {
+    color: #374151 !important;
+    font-size: 9pt !important;
+    line-height: 1.45 !important;
+  }
+
+  .resume-skills-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 4px !important;
+    font-size: 8.5pt !important;
+    color: #374151 !important;
+  }
+
+  .resume-skills-grid strong {
+    color: #111827 !important;
+  }
+
+  .resume-item {
+    margin-bottom: 8px !important;
+    page-break-inside: avoid;
+  }
+
+  .resume-item-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    font-size: 9.5pt !important;
+    margin-bottom: 2px !important;
+  }
+
+  .resume-item-header strong {
+    color: #111827 !important;
+  }
+
+  .resume-item-header span {
+    color: #059669 !important;
+    font-size: 8pt !important;
+    font-weight: 600 !important;
+  }
 }
 
 /* Reduced Motion */
