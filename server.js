@@ -22,7 +22,7 @@ const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/portfolio_db';
 
 // Ensure uploads directory exists
-const uploadsDir = path.join(__dirname, 'uploads');
+const uploadsDir = path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
@@ -48,7 +48,42 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Serve static assets
 app.use('/uploads', express.static(uploadsDir));
-app.use(express.static(__dirname));
+app.use(express.static(process.cwd()));
+
+// =========================================================
+// MONGODB SERVERLESS CACHED CONNECTION
+// =========================================================
+let cachedDbConnection = null;
+
+async function connectDB() {
+  if (cachedDbConnection && mongoose.connection.readyState === 1) {
+    return cachedDbConnection;
+  }
+  try {
+    const conn = await mongoose.connect(MONGO_URI, {
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 45000
+    });
+    cachedDbConnection = conn;
+    console.log(`✅ MongoDB connected successfully to ${mongoose.connection.host}`);
+    return conn;
+  } catch (err) {
+    console.error('❌ MongoDB Connection Error:', err.message);
+    throw err;
+  }
+}
+
+// Middleware to ensure DB connection before handling API routes
+app.use(async (req, res, next) => {
+  if (req.path.startsWith('/api')) {
+    try {
+      await connectDB();
+    } catch (err) {
+      return res.status(500).json({ success: false, error: 'Database connection error: ' + err.message });
+    }
+  }
+  next();
+});
 
 // =========================================================
 // NODEMAILER GMAIL SMTP SERVICE
@@ -334,14 +369,34 @@ app.post('/api/auth/login', async (req, res) => {
       return res.status(400).json({ success: false, error: 'Username and password required.' });
     }
 
-    const user = await User.findOne({ username });
+    const expectedUser = process.env.ADMIN_USER || 'admin';
+    const expectedPass = process.env.ADMIN_PASS || 'admin123';
+
+    let user = await User.findOne({ username });
+
+    // Auto-create default admin if not existing in Atlas database
+    if (!user && username === expectedUser) {
+      user = await User.create({
+        username: expectedUser,
+        password: expectedPass,
+        role: 'admin'
+      });
+      console.log('✓ Admin user auto-initialized in database:', expectedUser);
+    }
+
     if (!user) {
       return res.status(401).json({ success: false, error: 'Invalid admin credentials.' });
     }
 
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
-      return res.status(401).json({ success: false, error: 'Invalid admin credentials.' });
+      // In case password was reset in environment variables
+      if (username === expectedUser && password === expectedPass) {
+        user.password = expectedPass;
+        await user.save();
+      } else {
+        return res.status(401).json({ success: false, error: 'Invalid admin credentials.' });
+      }
     }
 
     const token = user.getSignedJwtToken();
@@ -352,7 +407,7 @@ app.post('/api/auth/login', async (req, res) => {
     });
   } catch (err) {
     console.error('Login error:', err);
-    res.status(500).json({ success: false, error: 'Authentication failed.' });
+    res.status(500).json({ success: false, error: 'Authentication failed: ' + err.message });
   }
 });
 
@@ -728,32 +783,32 @@ app.post('/api/seed', protect, async (req, res) => {
 });
 
 // =========================================================
-// HTML PAGE ROUTES
+// HTML PAGE ROUTES (FALLBACK)
 // =========================================================
 
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'admin.html'));
+  res.sendFile(path.resolve(process.cwd(), 'admin.html'));
 });
 
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  res.sendFile(path.resolve(process.cwd(), 'index.html'));
 });
 
 // =========================================================
-// START SERVER
+// STANDALONE LOCAL RUNNER
 // =========================================================
-mongoose.connect(MONGO_URI)
-  .then(async () => {
-    console.log(`✅ MongoDB connected successfully at ${MONGO_URI}`);
-    await seedData();
-    app.listen(PORT, () => {
-      console.log(`🚀 Ratul Shee Portfolio Server active on http://localhost:${PORT}`);
-      console.log(`🔒 Admin Portal accessible at http://localhost:${PORT}/admin`);
+if (process.env.NODE_ENV !== 'production' || !process.env.VERCEL) {
+  connectDB()
+    .then(async () => {
+      await seedData();
+      app.listen(PORT, () => {
+        console.log(`🚀 Ratul Shee Portfolio Server active on http://localhost:${PORT}`);
+        console.log(`🔒 Admin Portal accessible at http://localhost:${PORT}/admin`);
+      });
+    })
+    .catch(err => {
+      console.error('❌ Server startup error:', err);
     });
-  })
-  .catch(err => {
-    console.error('❌ MongoDB Connection Error:', err);
-    app.listen(PORT, () => {
-      console.log(`🚀 Portfolio Server running on http://localhost:${PORT}`);
-    });
-  });
+}
+
+module.exports = app;
