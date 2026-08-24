@@ -3218,67 +3218,98 @@ h1, h2, h3, h4 {
   .btn-submit { padding: 12px; font-size: 0.82rem; }
 }
 
-/* Print Styles — Pixel-Perfect Clean CV Output (Zero Blank Pages, Full Balanced Page) */
+/* Print Styles — Pixel-Perfect Clean CV Output (Zero Borders, Pure White Canvas) */
 @media print {
+  :root {
+    --bg: #ffffff !important;
+    --surface: #ffffff !important;
+    --surface-hi: #ffffff !important;
+    --border: transparent !important;
+    --border-light: transparent !important;
+  }
+
   @page {
     size: A4 portrait;
-    margin: 8mm 12mm;
+    margin: 10mm 14mm;
+    background: #ffffff !important;
+  }
+
+  *, *::before, *::after {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    background-image: none !important;
   }
 
   html, body {
     background: #ffffff !important;
+    background-color: #ffffff !important;
     color: #0f172a !important;
     font-size: 10.5pt !important;
+    width: 100% !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
-    overflow: visible !important;
     margin: 0 !important;
     padding: 0 !important;
+    border: none !important;
+    outline: none !important;
+    overflow: visible !important;
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
   }
 
-  /* Completely remove all web portfolio sections from the print document flow */
+  /* Completely remove all web background canvases, auroras, navbars, and sections */
+  #net-canvas, #confettiCanvas, .aurora-container, .aurora-blob,
+  #nav, .nav, footer, .footer, .scroll-bar, .toast-container,
+  .theme-popup, .cmd-palette-backdrop, #projectModal,
+  .resume-topbar, .modal-close-btn,
+  header, main, section:not(.resume-section), article {
+    display: none !important;
+  }
+
   body > *:not(#resumeModal) {
     display: none !important;
   }
 
-  #resumeModal {
+  #resumeModal, .resume-modal-backdrop {
     display: block !important;
     position: static !important;
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
     background: #ffffff !important;
+    background-color: #ffffff !important;
     color: #0f172a !important;
     padding: 0 !important;
     margin: 0 !important;
+    border: none !important;
+    outline: none !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
-    border: none !important;
+    -webkit-backdrop-filter: none !important;
     visibility: visible !important;
     opacity: 1 !important;
     overflow: visible !important;
   }
 
   .resume-modal-card {
+    display: block !important;
     position: static !important;
     width: 100% !important;
     max-width: 100% !important;
     height: auto !important;
     max-height: none !important;
     background: #ffffff !important;
+    background-color: #ffffff !important;
     color: #0f172a !important;
     border: none !important;
+    outline: none !important;
     box-shadow: none !important;
     padding: 0 !important;
     margin: 0 !important;
     overflow: visible !important;
     transform: none !important;
-  }
-
-  .resume-topbar, .modal-close-btn, #nav, .nav, footer, .footer, canvas, .aurora-container, .scroll-bar, .toast-container {
-    display: none !important;
+    border-radius: 0 !important;
   }
 
   .resume-sheet {
