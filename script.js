@@ -366,21 +366,10 @@ function initPortfolioApp() {
   bindCopyButtons();
 
   /* =========================================================
-     7. Boot Preloader Sequence
+     7. Hero Interactive Typewriter
      ========================================================= */
-  const bootScreen = document.getElementById('bootScreen');
-  const bootLine1 = document.getElementById('bootLine1');
-  const bootLine2Wrap = document.getElementById('bootLine2Wrap');
-  const bootLine2 = document.getElementById('bootLine2');
-  const bootLine3Wrap = document.getElementById('bootLine3Wrap');
-  const bootLine3 = document.getElementById('bootLine3');
-  const bootFill = document.getElementById('bootFill');
-  const bootStatusText = document.getElementById('bootStatusText');
   const heroTyped = document.getElementById('heroTyped');
-  const bootSkipBtn = document.getElementById('bootSkipBtn');
-
-  if (bootLine2Wrap) bootLine2Wrap.style.opacity = '0';
-  if (bootLine3Wrap) bootLine3Wrap.style.opacity = '0';
+  let defaultTypedMsg = 'Full-Stack MERN Developer based in Chandannagar, India. Specializing in high-performance web systems and AI workflows.';
 
   function typeWriter(el, text, speed, cb) {
     if (!el) return;
@@ -397,55 +386,9 @@ function initPortfolioApp() {
     step();
   }
 
-  function finishBoot() {
-    if (!bootScreen) return;
-    bootScreen.classList.add('done');
-    sessionStorage.setItem('ratul_boot_done', 'true');
-    if (heroTyped && !heroTyped.textContent) {
-      typeWriter(heroTyped, defaultTypedMsg, 16);
-    }
+  if (heroTyped) {
+    typeWriter(heroTyped, defaultTypedMsg, 16);
   }
-
-  if (bootSkipBtn) {
-    bootSkipBtn.addEventListener('click', finishBoot);
-  }
-  if (bootScreen) {
-    bootScreen.addEventListener('click', finishBoot);
-  }
-
-  // Guaranteed safety fallback to dismiss boot screen after 1.5s
-  setTimeout(finishBoot, 1500);
-
-  function runBoot() {
-    const hasBooted = sessionStorage.getItem('ratul_boot_done');
-    if (prefersReduced || hasBooted) {
-      if (bootScreen) bootScreen.classList.add('done');
-      if (heroTyped) heroTyped.textContent = defaultTypedMsg;
-      return;
-    }
-
-    sessionStorage.setItem('ratul_boot_done', 'true');
-
-    typeWriter(bootLine1, 'load_environment --profile ratul_shee', 20, () => {
-      if (bootLine2Wrap) bootLine2Wrap.style.opacity = '1';
-      typeWriter(bootLine2, 'initializing cloud database & backend API services... [OK]', 18, () => {
-        if (bootLine3Wrap) bootLine3Wrap.style.opacity = '1';
-        typeWriter(bootLine3, 'system status: 100% operational. welcome.', 18, () => {
-          let p = 0;
-          const timer = setInterval(() => {
-            p += 5;
-            if (bootFill) bootFill.style.width = Math.min(p, 100) + '%';
-            if (bootStatusText) bootStatusText.textContent = `MOUNTING DYNAMIC MODULES... ${Math.min(p, 100)}%`;
-            if (p >= 100) {
-              clearInterval(timer);
-              setTimeout(finishBoot, 240);
-            }
-          }, 20);
-        });
-      });
-    });
-  }
-  runBoot();
 
   /* =========================================================
      8. Interactive Developer Terminal in Hero
