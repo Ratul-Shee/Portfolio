@@ -1317,9 +1317,12 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   loadDynamicPortfolio();
 
   /* =========================================================
-     24. Interactive Contact Form Submission with Confetti
+     24. Interactive Contact Form Validation & Submission
      ========================================================= */
   const contactForm = document.getElementById('contactForm');
+  const formName = document.getElementById('formName');
+  const formEmail = document.getElementById('formEmail');
+  const formSubject = document.getElementById('formSubject');
   const formMsg = document.getElementById('formMsg');
   const charCount = document.getElementById('charCount');
   const submitBtn = document.getElementById('submitBtn');
@@ -1331,27 +1334,132 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     });
   }
 
+  // Email regular expression
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+
+  // Helper to show/clear field error
+  function setFieldError(field, errorText) {
+    if (!field) return;
+    const parentGroup = field.closest('.form-group');
+    if (!parentGroup) return;
+
+    let errorEl = parentGroup.querySelector('.field-error-msg');
+    if (errorText) {
+      field.classList.add('is-invalid');
+      field.classList.remove('is-valid');
+      if (!errorEl) {
+        errorEl = document.createElement('span');
+        errorEl.className = 'field-error-msg';
+        parentGroup.appendChild(errorEl);
+      }
+      errorEl.innerHTML = `⚠️ ${escapeHtml(errorText)}`;
+    } else {
+      field.classList.remove('is-invalid');
+      if (field.value.trim().length > 0) {
+        field.classList.add('is-valid');
+      } else {
+        field.classList.remove('is-valid');
+      }
+      if (errorEl) errorEl.remove();
+    }
+  }
+
+  // Individual Field Validators
+  function validateName(input) {
+    const val = input.value.trim();
+    if (!val) {
+      setFieldError(input, 'Please enter your name.');
+      return false;
+    }
+    if (val.length < 2) {
+      setFieldError(input, 'Name must be at least 2 characters.');
+      return false;
+    }
+    setFieldError(input, '');
+    return true;
+  }
+
+  function validateEmail(input) {
+    const val = input.value.trim();
+    if (!val) {
+      setFieldError(input, 'Please enter your email address.');
+      return false;
+    }
+    if (!emailRegex.test(val)) {
+      setFieldError(input, 'Please enter a valid email (e.g. name@domain.com).');
+      return false;
+    }
+    setFieldError(input, '');
+    return true;
+  }
+
+  function validateMessage(input) {
+    const val = input.value.trim();
+    if (!val) {
+      setFieldError(input, 'Please enter your message.');
+      return false;
+    }
+    if (val.length < 10) {
+      setFieldError(input, `Message is too short (${val.length}/10 chars minimum).`);
+      return false;
+    }
+    setFieldError(input, '');
+    return true;
+  }
+
+  // Live input & blur listeners
+  if (formName) {
+    formName.addEventListener('input', () => { if (formName.classList.contains('is-invalid')) validateName(formName); });
+    formName.addEventListener('blur', () => validateName(formName));
+  }
+  if (formEmail) {
+    formEmail.addEventListener('input', () => { if (formEmail.classList.contains('is-invalid')) validateEmail(formEmail); });
+    formEmail.addEventListener('blur', () => validateEmail(formEmail));
+  }
+  if (formMsg) {
+    formMsg.addEventListener('input', () => { if (formMsg.classList.contains('is-invalid')) validateMessage(formMsg); });
+    formMsg.addEventListener('blur', () => validateMessage(formMsg));
+  }
+
+  // Form Submit Handler
   if (contactForm) {
     contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
-      const name = document.getElementById('formName')?.value.trim();
-      const email = document.getElementById('formEmail')?.value.trim();
-      const subject = document.getElementById('formSubject')?.value.trim() || 'General Inquiry';
-      const message = formMsg?.value.trim();
+      const isNameValid = validateName(formName);
+      const isEmailValid = validateEmail(formEmail);
+      const isMsgValid = validateMessage(formMsg);
 
-      if (!name || !email || !message) {
+      if (!isNameValid || !isEmailValid || !isMsgValid) {
+        // Shake form to indicate validation failure
+        contactForm.classList.remove('shake');
+        void contactForm.offsetWidth; // trigger reflow
+        contactForm.classList.add('shake');
+
         if (formAlert) {
           formAlert.className = 'form-status-alert error';
-          formAlert.textContent = 'Please fill out all required fields (*).';
+          formAlert.textContent = 'Please correct the highlighted errors before submitting.';
         }
+
+        // Focus first invalid input
+        if (!isNameValid) formName.focus();
+        else if (!isEmailValid) formEmail.focus();
+        else if (!isMsgValid) formMsg.focus();
+
+        playAudioFeedback(180, 'sawtooth', 0.12);
         return;
       }
 
+      const name = formName.value.trim();
+      const email = formEmail.value.trim();
+      const subject = formSubject?.value.trim() || 'General Inquiry';
+      const message = formMsg.value.trim();
+
+      if (formAlert) formAlert.style.display = 'none';
       submitBtn.disabled = true;
       const btnText = submitBtn.querySelector('.btn-text');
       const btnSpinner = submitBtn.querySelector('.btn-loading-spinner');
-      if (btnText) btnText.textContent = 'Transmitting to MongoDB...';
+      if (btnText) btnText.textContent = 'Transmitting to Cloud...';
       if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
       try {
@@ -1368,17 +1476,28 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
 
         if (data.success) {
           fireConfetti(160);
+          playAudioFeedback(520, 'sine', 0.15);
+
           if (formAlert) {
             formAlert.className = 'form-status-alert success';
-            formAlert.innerHTML = `✅ Thank you, <strong>${escapeHtml(name)}</strong>! Your message has been stored in MongoDB. I'll get back to you shortly.`;
+            formAlert.innerHTML = `✅ Thank you, <strong>${escapeHtml(name)}</strong>! Your message has been stored in MongoDB Atlas & a copy sent to your email. I'll get back to you shortly.`;
           }
-          showToast('🚀 Message saved to MongoDB & sent to Ratul!');
+          showToast('🚀 Message saved & email notification dispatched!');
+
+          // Reset form fields and valid state
           contactForm.reset();
+          [formName, formEmail, formSubject, formMsg].forEach(f => {
+            if (f) {
+              f.classList.remove('is-valid', 'is-invalid');
+              const err = f.closest('.form-group')?.querySelector('.field-error-msg');
+              if (err) err.remove();
+            }
+          });
           if (charCount) charCount.textContent = '0';
         } else {
           if (formAlert) {
             formAlert.className = 'form-status-alert error';
-            formAlert.textContent = data.error || 'Submission failed.';
+            formAlert.textContent = data.error || 'Submission failed. Please try again.';
           }
         }
       } catch (err) {
@@ -1389,10 +1508,13 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
         fireConfetti(120);
         if (formAlert) {
           formAlert.className = 'form-status-alert success';
-          formAlert.innerHTML = `✅ Thank you, <strong>${escapeHtml(name)}</strong>! Your message has been dispatched.`;
+          formAlert.innerHTML = `✅ Thank you, <strong>${escapeHtml(name)}</strong>! Your message has been received.`;
         }
         showToast('🚀 Message received!');
         contactForm.reset();
+        [formName, formEmail, formSubject, formMsg].forEach(f => {
+          if (f) f.classList.remove('is-valid', 'is-invalid');
+        });
         if (charCount) charCount.textContent = '0';
       }
     });
