@@ -7,7 +7,7 @@
   <meta name="description" content="Portfolio of Ratul Shee — Full-Stack MERN Developer building high-performance web applications with React, Node.js, Express, MongoDB, and AI integrations.">
   <meta name="keywords" content="Ratul Shee, MERN Stack Developer, Full Stack Web Developer, React Developer, Node.js, Express, MongoDB, Portfolio, Chandannagar">
   <meta name="author" content="Ratul Shee">
-  <meta name="theme-color" content="#070b12">
+  <meta name="theme-color" content="#06090f">
 
   <!-- Open Graph / Social Meta -->
   <meta property="og:type" content="website">
@@ -21,12 +21,12 @@
   <meta name="twitter:image" content="profile.jpg">
 
   <!-- Favicon -->
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%23070b12'/%3E%3Cpath d='M30 35 L15 50 L30 65' stroke='%2339ff9c' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M70 35 L85 50 L70 65' stroke='%2338bdf8' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M58 28 L42 72' stroke='%23e2e8f0' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%2306090f'/%3E%3Cpath d='M30 35 L15 50 L30 65' stroke='%2339ff9c' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M70 35 L85 50 L70 65' stroke='%2338bdf8' stroke-width='8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3Cpath d='M58 28 L42 72' stroke='%23e2e8f0' stroke-width='7' stroke-linecap='round'/%3E%3C/svg%3E">
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&family=JetBrains+Mono:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -34,6 +34,9 @@
 
   <!-- Ambient WebGL / Canvas Gravity Constellation -->
   <canvas id="net-canvas" aria-hidden="true"></canvas>
+
+  <!-- Celebratory Confetti Canvas -->
+  <canvas id="confettiCanvas" aria-hidden="true"></canvas>
 
   <!-- Background Aurora Glow Blobs -->
   <div class="aurora-container" aria-hidden="true">
@@ -72,12 +75,38 @@
     </div>
   </div>
 
+  <!-- Theme Accent Switcher Modal / Dropdown -->
+  <div class="theme-popup" id="themePopup" aria-hidden="true">
+    <div class="theme-popup-header">
+      <span>Color Theme Accent</span>
+      <button class="theme-popup-close" id="themeCloseBtn">✕</button>
+    </div>
+    <div class="theme-options-grid">
+      <button class="theme-opt active" data-theme="emerald">
+        <span class="theme-swatch swatch-emerald"></span>
+        <span class="theme-opt-label">Emerald Matrix</span>
+      </button>
+      <button class="theme-opt" data-theme="violet">
+        <span class="theme-swatch swatch-violet"></span>
+        <span class="theme-opt-label">Cyber Violet</span>
+      </button>
+      <button class="theme-opt" data-theme="cyan">
+        <span class="theme-swatch swatch-cyan"></span>
+        <span class="theme-opt-label">Electric Cyan</span>
+      </button>
+      <button class="theme-opt" data-theme="amber">
+        <span class="theme-swatch swatch-amber"></span>
+        <span class="theme-opt-label">Sunset Amber</span>
+      </button>
+    </div>
+  </div>
+
   <!-- Command Palette Modal (Ctrl + K / ⌘K) -->
   <div class="cmd-palette-backdrop" id="cmdBackdrop" aria-hidden="true">
     <div class="cmd-palette-box" role="dialog" aria-modal="true" aria-label="Command Palette">
       <div class="cmd-input-wrap">
         <svg viewBox="0 0 24 24" class="cmd-search-icon"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-        <input type="text" id="cmdInput" class="cmd-input" placeholder="Type a command or jump to section... (e.g. projects, resume, copy email)" autocomplete="off">
+        <input type="text" id="cmdInput" class="cmd-input" placeholder="Type a command (e.g. projects, resume, copy email, theme)..." autocomplete="off">
         <span class="cmd-kbd-badge">ESC</span>
       </div>
       <div class="cmd-results" id="cmdResults">
@@ -113,32 +142,113 @@
           <span class="cmd-item-key">G C</span>
         </div>
 
-        <div class="cmd-group-label">Quick Actions</div>
+        <div class="cmd-group-label">Super Actions &amp; Tools</div>
+        <div class="cmd-item" data-action="open-resume">
+          <span class="cmd-item-icon">📄</span>
+          <span class="cmd-item-title">View Developer Resume / CV</span>
+          <span class="cmd-item-badge">Modal</span>
+        </div>
         <div class="cmd-item" data-action="copy-email">
           <span class="cmd-item-icon">📋</span>
           <span class="cmd-item-title">Copy Email Address (ratulshee6@gmail.com)</span>
           <span class="cmd-item-badge">Action</span>
+        </div>
+        <div class="cmd-item" data-action="toggle-theme-popup">
+          <span class="cmd-item-icon">🎨</span>
+          <span class="cmd-item-title">Change Theme Accent Color</span>
+          <span class="cmd-item-badge">Palette</span>
+        </div>
+        <div class="cmd-item" data-action="fire-confetti">
+          <span class="cmd-item-icon">🎉</span>
+          <span class="cmd-item-title">Fire Celebratory Confetti Cannon</span>
+          <span class="cmd-item-badge">Fun</span>
         </div>
         <div class="cmd-item" data-action="toggle-sound">
           <span class="cmd-item-icon">🔊</span>
           <span class="cmd-item-title">Toggle Sci-Fi Sound Effects</span>
           <span class="cmd-item-badge">Audio</span>
         </div>
-        <div class="cmd-item" data-action="open-github">
-          <span class="cmd-item-icon">🐙</span>
-          <span class="cmd-item-title">Open GitHub Profile</span>
-          <span class="cmd-item-badge">External</span>
-        </div>
-        <div class="cmd-item" data-action="open-linkedin">
-          <span class="cmd-item-icon">💼</span>
-          <span class="cmd-item-title">Open LinkedIn Profile</span>
-          <span class="cmd-item-badge">External</span>
+        <div class="cmd-item" data-action="open-admin">
+          <span class="cmd-item-icon">⚡</span>
+          <span class="cmd-item-title">Open CMS Admin Portal (/admin)</span>
+          <span class="cmd-item-badge">Admin</span>
         </div>
       </div>
       <div class="cmd-footer">
         <span>Use <kbd>↑</kbd> <kbd>↓</kbd> to navigate</span>
         <span><kbd>↵</kbd> to select</span>
         <span><kbd>ESC</kbd> to dismiss</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interactive Developer Resume / CV Modal -->
+  <div class="resume-modal-backdrop" id="resumeModal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="resume-modal-card">
+      <div class="resume-topbar">
+        <div class="resume-badge">📄 Developer Resume / Curriculum Vitae</div>
+        <div class="resume-actions-top">
+          <button class="btn btn-ghost btn-sm" onclick="window.print()">🖨️ Print CV</button>
+          <button class="modal-close-btn" id="resumeCloseBtn" aria-label="Close resume modal">✕</button>
+        </div>
+      </div>
+
+      <div class="resume-sheet">
+        <header class="resume-header">
+          <div>
+            <h2 class="resume-name">Ratul Shee</h2>
+            <p class="resume-title">Full-Stack MERN Developer &amp; Software Engineer</p>
+            <p class="resume-contact-line">
+              📍 Chandannagar, West Bengal, India | ✉️ ratulshee6@gmail.com | 🌐 github.com/Ratul-Shee
+            </p>
+          </div>
+        </header>
+
+        <section class="resume-section">
+          <h3>Professional Summary</h3>
+          <p>
+            Passionate Full-Stack Developer specializing in the MERN stack (MongoDB, Express.js, React, Node.js). Adept at turning complex business requirements into high-throughput backend services and fluid, accessible user interfaces. Experienced in JWT authentication, RESTful API architecture, state management, and modern AI tool integrations.
+          </p>
+        </section>
+
+        <section class="resume-section">
+          <h3>Technical Competencies</h3>
+          <div class="resume-skills-grid">
+            <div><strong>Frontend:</strong> React.js, Redux, HTML5, CSS3/Glassmorphism, Tailwind CSS, Responsive Web Design</div>
+            <div><strong>Backend:</strong> Node.js, Express.js, REST APIs, JSON Web Tokens (JWT), Middleware Architecture</div>
+            <div><strong>Databases:</strong> MongoDB Atlas, Mongoose ODM, Aggregation Pipelines, Indexing</div>
+            <div><strong>Languages &amp; Tools:</strong> JavaScript (ES6+), Python, Java, C, Git/GitHub, Postman API Testing, Vite</div>
+          </div>
+        </section>
+
+        <section class="resume-section">
+          <h3>Featured Full-Stack Projects</h3>
+          <div class="resume-item">
+            <div class="resume-item-header">
+              <strong>FinTrack — Personal Expense Manager</strong>
+              <span>React, Node.js, Express, MongoDB</span>
+            </div>
+            <p>Built a secure full-stack wealth and budget tracker featuring JWT authentication, category spending charts, and monthly burn-down summaries.</p>
+          </div>
+          <div class="resume-item">
+            <div class="resume-item-header">
+              <strong>DevPulse — MERN Content Studio &amp; CMS</strong>
+              <span>React, Node.js, Express, MongoDB</span>
+            </div>
+            <p>Architected a developer publishing platform with live split-view Markdown authoring, RBAC permissions, and MongoDB search indexing.</p>
+          </div>
+        </section>
+
+        <section class="resume-section">
+          <h3>Education</h3>
+          <div class="resume-item">
+            <div class="resume-item-header">
+              <strong>Supreme Knowledge Foundation Group of Institutions</strong>
+              <span>2024 — 2027</span>
+            </div>
+            <p>Bachelor of Technology (B.Tech) in Computer Systems &amp; Software Engineering.</p>
+          </div>
+        </section>
       </div>
     </div>
   </div>
@@ -191,6 +301,12 @@
       </nav>
 
       <div class="nav-actions">
+        <!-- Theme Accent Switcher Trigger -->
+        <button class="theme-trigger-btn magnetic" id="themeTriggerBtn" aria-label="Change Color Theme" title="Switch Theme Accent">
+          <span class="theme-dot-preview" id="themeDotPreview"></span>
+          <span class="theme-label-txt">Theme</span>
+        </button>
+
         <!-- Command Menu Trigger -->
         <button class="cmd-trigger-btn magnetic" id="cmdTriggerBtn" aria-label="Open Command Menu (Ctrl+K)">
           <svg viewBox="0 0 24 24" class="search-mini-icon"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -288,8 +404,8 @@
             <span class="btn-text">Explore Projects</span>
             <svg viewBox="0 0 24 24" class="btn-icon"><path d="M5 12h14M12 5l7 7-7 7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
           </a>
-          <button class="btn btn-ghost magnetic" id="heroQuickLookBtn" data-action="open-cmd">
-            <span class="btn-text">Command Menu (⌘K)</span>
+          <button class="btn btn-ghost magnetic" id="heroResumeBtn">
+            <span class="btn-text">View Resume / CV 📄</span>
           </button>
           <button class="btn btn-glass magnetic copy-email-btn" data-email="ratulshee6@gmail.com">
             <svg viewBox="0 0 24 24" class="btn-icon"><path d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -521,7 +637,7 @@
               Components structured with declarative UI patterns, custom hooks for API state management, and CSS variables for high-contrast dark themes.
             </p>
             <div class="arch-code-preview">
-              <code id="archDetailCode">// Sample REST query&#10;const res = await api.post('/api/v1/auth/login', credentials);&#10;dispatch({ type: 'AUTH_SUCCESS', payload: res.data });</code>
+              <code id="archDetailCode">// Sample REST query&#10;const res = await api.post('/api/auth/login', credentials);&#10;dispatch({ type: 'AUTH_SUCCESS', payload: res.data });</code>
             </div>
           </div>
         </div>
@@ -745,7 +861,7 @@
             <div class="project-content">
               <div class="project-meta">
                 <span class="project-num">01 // FINTECH</span>
-                <span class="project-date">Production Ready</span>
+                <span class="project-date">Active</span>
               </div>
 
               <h3>FinTrack — Personal Expense Manager</h3>
@@ -773,7 +889,7 @@
                   <span>Repository</span>
                 </a>
                 <button class="btn btn-primary btn-sm magnetic quick-view-btn" data-project="fintrack">
-                  <span>Architecture &amp; Specs ➔</span>
+                  <span>Specs ➔</span>
                 </button>
               </div>
             </div>
@@ -795,7 +911,7 @@
             <div class="project-content">
               <div class="project-meta">
                 <span class="project-num">02 // CMS &amp; PUBLISHING</span>
-                <span class="project-date">Full-Stack</span>
+                <span class="project-date">Active</span>
               </div>
 
               <h3>DevPulse — MERN Content Studio</h3>
@@ -823,7 +939,7 @@
                   <span>Repository</span>
                 </a>
                 <button class="btn btn-primary btn-sm magnetic quick-view-btn" data-project="devpulse">
-                  <span>Architecture &amp; Specs ➔</span>
+                  <span>Specs ➔</span>
                 </button>
               </div>
             </div>
@@ -880,7 +996,7 @@
                   <span>Repository</span>
                 </a>
                 <button class="btn btn-primary btn-sm magnetic quick-view-btn" data-project="promptmatrix">
-                  <span>Architecture &amp; Specs ➔</span>
+                  <span>Specs ➔</span>
                 </button>
               </div>
             </div>

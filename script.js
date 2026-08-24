@@ -1,11 +1,12 @@
 /* =========================================================
-   RATUL SHEE — PORTFOLIO ENGINE & MOTION SUITE
-   Full Interactive Motion, Sound FX, Terminal & Command Hub
+   RATUL SHEE — DYNAMIC PORTFOLIO ENGINE & MOTION SUITE v2.5
+   Themes, Pure Canvas Confetti, Web Audio Synth & MongoDB Integration
    ========================================================= */
 
 document.addEventListener('DOMContentLoaded', () => {
 
   const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const API_BASE = '/api';
 
   /* =========================================================
      1. Web Audio API Sci-Fi Synthesizer (Zero Dependencies)
@@ -29,13 +30,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!audioCtx) return;
 
       const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
 
       if (type === 'click') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
         osc.type = 'sine';
         osc.frequency.setValueAtTime(800, now);
         osc.frequency.exponentialRampToValueAtTime(400, now + 0.05);
@@ -44,6 +44,10 @@ document.addEventListener('DOMContentLoaded', () => {
         osc.start(now);
         osc.stop(now + 0.05);
       } else if (type === 'hover') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(520, now);
         osc.frequency.exponentialRampToValueAtTime(780, now + 0.04);
@@ -52,6 +56,10 @@ document.addEventListener('DOMContentLoaded', () => {
         osc.start(now);
         osc.stop(now + 0.04);
       } else if (type === 'open') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
         osc.type = 'sine';
         osc.frequency.setValueAtTime(440, now);
         osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
@@ -59,27 +67,28 @@ document.addEventListener('DOMContentLoaded', () => {
         gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
         osc.start(now);
         osc.stop(now + 0.12);
-      } else if (type === 'success') {
-        // High double-chime
-        const osc2 = audioCtx.createOscillator();
-        const gain2 = audioCtx.createGain();
-        osc2.connect(gain2);
-        gain2.connect(audioCtx.destination);
+      } else if (type === 'success' || type === 'celebrate') {
+        // Multi-tone chord arpeggio
+        const freqs = [523.25, 659.25, 783.99, 1046.50]; // C Major
+        freqs.forEach((freq, idx) => {
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
 
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(587.33, now); // D5
-        gain.gain.setValueAtTime(0.08, now);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
-        osc.start(now);
-        osc.stop(now + 0.18);
-
-        osc2.type = 'sine';
-        osc2.frequency.setValueAtTime(880, now + 0.09); // A5
-        gain2.gain.setValueAtTime(0.08, now + 0.09);
-        gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
-        osc2.start(now + 0.09);
-        osc2.stop(now + 0.28);
+          const startTime = now + (idx * 0.07);
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, startTime);
+          gain.gain.setValueAtTime(0.06, startTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.25);
+          osc.start(startTime);
+          osc.stop(startTime + 0.25);
+        });
       } else if (type === 'packet') {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
         osc.type = 'sawtooth';
         osc.frequency.setValueAtTime(300, now);
         osc.frequency.exponentialRampToValueAtTime(1200, now + 0.2);
@@ -98,6 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const soundLabel = document.getElementById('soundLabel');
 
   function updateSoundUI() {
+    if (!soundToggleBtn || !soundLabel) return;
     if (sfxEnabled) {
       soundToggleBtn.classList.add('sound-on');
       soundLabel.textContent = 'SFX: ON';
@@ -114,20 +124,184 @@ document.addEventListener('DOMContentLoaded', () => {
       sfxEnabled = !sfxEnabled;
       initAudio();
       updateSoundUI();
-      if (sfxEnabled) playSynthSound('success');
+      if (sfxEnabled) playSynthSound('celebrate');
       showToast(sfxEnabled ? '🔊 Sci-Fi Sound Effects Enabled' : '🔇 Audio Muted');
     });
   }
 
-  // Add click sound to interactive elements
   document.addEventListener('click', (e) => {
-    if (e.target.closest('a, button, .cmd-item, .arch-node, .filter-tab')) {
+    if (e.target.closest('a, button, .cmd-item, .arch-node, .filter-tab, .theme-opt')) {
       playSynthSound('click');
     }
   });
 
   /* =========================================================
-     2. Toast Notification System
+     2. Pure Canvas Confetti Cannon Physics
+     ========================================================= */
+  const confettiCanvas = document.getElementById('confettiCanvas');
+  let confettiCtx = confettiCanvas ? confettiCanvas.getContext('2d') : null;
+  let confettiParticles = [];
+  let confettiAnimId = null;
+
+  function resizeConfetti() {
+    if (!confettiCanvas) return;
+    confettiCanvas.width = window.innerWidth;
+    confettiCanvas.height = window.innerHeight;
+  }
+  resizeConfetti();
+  window.addEventListener('resize', resizeConfetti);
+
+  function fireConfetti(count = 120) {
+    if (!confettiCanvas || prefersReduced) return;
+    playSynthSound('celebrate');
+
+    const colors = ['#39ff9c', '#38bdf8', '#c084fc', '#f59e0b', '#ec4899', '#ffffff'];
+
+    for (let i = 0; i < count; i++) {
+      confettiParticles.push({
+        x: window.innerWidth / 2 + (Math.random() - 0.5) * 200,
+        y: window.innerHeight * 0.65,
+        vx: (Math.random() - 0.5) * 16,
+        vy: -Math.random() * 18 - 8,
+        size: Math.random() * 8 + 5,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        rotation: Math.random() * 360,
+        rotSpeed: (Math.random() - 0.5) * 10,
+        opacity: 1,
+        gravity: 0.45
+      });
+    }
+
+    if (!confettiAnimId) {
+      animateConfetti();
+    }
+  }
+
+  function animateConfetti() {
+    if (!confettiCtx || confettiParticles.length === 0) {
+      if (confettiCtx) confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+      confettiAnimId = null;
+      return;
+    }
+
+    confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+
+    for (let i = confettiParticles.length - 1; i >= 0; i--) {
+      const p = confettiParticles[i];
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += p.gravity;
+      p.rotation += p.rotSpeed;
+      p.opacity -= 0.007;
+
+      if (p.opacity <= 0 || p.y > confettiCanvas.height + 20) {
+        confettiParticles.splice(i, 1);
+        continue;
+      }
+
+      confettiCtx.save();
+      confettiCtx.translate(p.x, p.y);
+      confettiCtx.rotate((p.rotation * Math.PI) / 180);
+      confettiCtx.globalAlpha = Math.max(0, p.opacity);
+      confettiCtx.fillStyle = p.color;
+      confettiCtx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+      confettiCtx.restore();
+    }
+
+    confettiAnimId = requestAnimationFrame(animateConfetti);
+  }
+
+  /* =========================================================
+     3. Theme Accent Color Switcher
+     ========================================================= */
+  const themeTriggerBtn = document.getElementById('themeTriggerBtn');
+  const themePopup = document.getElementById('themePopup');
+  const themeCloseBtn = document.getElementById('themeCloseBtn');
+  const themeOpts = document.querySelectorAll('.theme-opt');
+  const themeDotPreview = document.getElementById('themeDotPreview');
+
+  let currentTheme = localStorage.getItem('ratul_portfolio_theme') || 'emerald';
+
+  function setTheme(theme) {
+    currentTheme = theme;
+    document.body.className = `theme-${theme}`;
+    localStorage.setItem('ratul_portfolio_theme', theme);
+
+    themeOpts.forEach(opt => {
+      if (opt.getAttribute('data-theme') === theme) opt.classList.add('active');
+      else opt.classList.remove('active');
+    });
+
+    const swatchColors = {
+      emerald: '#39ff9c',
+      violet: '#c084fc',
+      cyan: '#00f0ff',
+      amber: '#f59e0b'
+    };
+    if (themeDotPreview) {
+      themeDotPreview.style.background = swatchColors[theme] || '#39ff9c';
+      themeDotPreview.style.boxShadow = `0 0 8px ${swatchColors[theme] || '#39ff9c'}`;
+    }
+  }
+  setTheme(currentTheme);
+
+  if (themeTriggerBtn && themePopup) {
+    themeTriggerBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      themePopup.classList.toggle('open');
+      playSynthSound('click');
+    });
+  }
+
+  if (themeCloseBtn && themePopup) {
+    themeCloseBtn.addEventListener('click', () => {
+      themePopup.classList.remove('open');
+    });
+  }
+
+  document.addEventListener('click', (e) => {
+    if (themePopup && !themePopup.contains(e.target) && e.target !== themeTriggerBtn) {
+      themePopup.classList.remove('open');
+    }
+  });
+
+  themeOpts.forEach(opt => {
+    opt.addEventListener('click', () => {
+      const theme = opt.getAttribute('data-theme');
+      setTheme(theme);
+      if (themePopup) themePopup.classList.remove('open');
+      showToast(`🎨 Theme Accent: ${opt.querySelector('.theme-opt-label')?.textContent || theme}`);
+      playSynthSound('open');
+    });
+  });
+
+  /* =========================================================
+     4. Interactive Developer Resume / CV Modal
+     ========================================================= */
+  const resumeModal = document.getElementById('resumeModal');
+  const resumeCloseBtn = document.getElementById('resumeCloseBtn');
+  const heroResumeBtn = document.getElementById('heroResumeBtn');
+
+  function openResumeModal() {
+    if (!resumeModal) return;
+    resumeModal.classList.add('open');
+    playSynthSound('open');
+  }
+
+  function closeResumeModal() {
+    if (resumeModal) resumeModal.classList.remove('open');
+  }
+
+  if (heroResumeBtn) heroResumeBtn.addEventListener('click', openResumeModal);
+  if (resumeCloseBtn) resumeCloseBtn.addEventListener('click', closeResumeModal);
+  if (resumeModal) {
+    resumeModal.addEventListener('click', (e) => {
+      if (e.target === resumeModal) closeResumeModal();
+    });
+  }
+
+  /* =========================================================
+     5. Toast Notification System
      ========================================================= */
   const toastContainer = document.getElementById('toastContainer');
 
@@ -145,23 +319,26 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* =========================================================
-     3. Copy to Clipboard Trigger
+     6. Copy to Clipboard Trigger
      ========================================================= */
-  document.querySelectorAll('.copy-email-btn').forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const email = btn.getAttribute('data-email') || 'ratulshee6@gmail.com';
-      navigator.clipboard.writeText(email).then(() => {
-        playSynthSound('success');
-        showToast(`📋 Copied: <strong>${email}</strong>`);
-      }).catch(() => {
-        showToast(`📧 Email: ${email}`);
-      });
+  function bindCopyButtons() {
+    document.querySelectorAll('.copy-email-btn').forEach(btn => {
+      btn.onclick = (e) => {
+        e.preventDefault();
+        const email = btn.getAttribute('data-email') || 'ratulshee6@gmail.com';
+        navigator.clipboard.writeText(email).then(() => {
+          playSynthSound('success');
+          showToast(`📋 Copied: <strong>${email}</strong>`);
+        }).catch(() => {
+          showToast(`📧 Email: ${email}`);
+        });
+      };
     });
-  });
+  }
+  bindCopyButtons();
 
   /* =========================================================
-     4. Boot Preloader Sequence
+     7. Boot Preloader Sequence
      ========================================================= */
   const bootScreen = document.getElementById('bootScreen');
   const bootLine1 = document.getElementById('bootLine1');
@@ -178,6 +355,7 @@ document.addEventListener('DOMContentLoaded', () => {
   if (bootLine3Wrap) bootLine3Wrap.style.opacity = '0';
 
   function typeWriter(el, text, speed, cb) {
+    if (!el) return;
     let i = 0;
     function step() {
       if (i <= text.length) {
@@ -191,11 +369,13 @@ document.addEventListener('DOMContentLoaded', () => {
     step();
   }
 
+  let defaultTypedMsg = 'Full-Stack MERN Developer based in Chandannagar, India. Specializing in high-performance web systems and AI workflows.';
+
   function finishBoot() {
     if (!bootScreen) return;
     bootScreen.classList.add('done');
     if (heroTyped) {
-      typeWriter(heroTyped, 'Full-Stack MERN Developer based in Chandannagar, India. Specializing in high-performance web systems and AI workflows.', 24);
+      typeWriter(heroTyped, defaultTypedMsg, 20);
     }
   }
 
@@ -207,25 +387,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const hasBooted = sessionStorage.getItem('ratul_boot_done');
     if (prefersReduced || hasBooted) {
       if (bootScreen) bootScreen.classList.add('done');
-      if (heroTyped) heroTyped.textContent = 'Full-Stack MERN Developer based in Chandannagar, India. Specializing in high-performance web systems and AI workflows.';
+      if (heroTyped) heroTyped.textContent = defaultTypedMsg;
       return;
     }
 
     sessionStorage.setItem('ratul_boot_done', 'true');
 
-    typeWriter(bootLine1, 'load_environment --profile ratul_shee', 22, () => {
+    typeWriter(bootLine1, 'load_environment --profile ratul_shee', 20, () => {
       if (bootLine2Wrap) bootLine2Wrap.style.opacity = '1';
-      typeWriter(bootLine2, 'initializing MERN core (React, Node, Express, MongoDB)...', 20, () => {
+      typeWriter(bootLine2, 'connecting MongoDB & MERN backend services... [OK]', 18, () => {
         if (bootLine3Wrap) bootLine3Wrap.style.opacity = '1';
-        typeWriter(bootLine3, 'system status: 100% operational. welcome.', 20, () => {
+        typeWriter(bootLine3, 'system status: 100% operational. welcome.', 18, () => {
           let p = 0;
           const timer = setInterval(() => {
             p += 5;
             if (bootFill) bootFill.style.width = Math.min(p, 100) + '%';
-            if (bootStatusText) bootStatusText.textContent = `MOUNTING ASSETS... ${Math.min(p, 100)}%`;
+            if (bootStatusText) bootStatusText.textContent = `MOUNTING DYNAMIC MODULES... ${Math.min(p, 100)}%`;
             if (p >= 100) {
               clearInterval(timer);
-              setTimeout(finishBoot, 280);
+              setTimeout(finishBoot, 240);
             }
           }, 20);
         });
@@ -235,10 +415,18 @@ document.addEventListener('DOMContentLoaded', () => {
   runBoot();
 
   /* =========================================================
-     5. Interactive Developer Terminal in Hero
+     8. Interactive Developer Terminal in Hero
      ========================================================= */
   const termInput = document.getElementById('termInput');
   const termHistory = document.getElementById('termHistory');
+
+  let dynamicProjectsList = [
+    '1. FinTrack — Personal Expense & Budget Manager (MERN)',
+    '2. DevPulse — Content Studio & Markdown CMS (MERN)',
+    '3. PromptMatrix — AI Prompt Workbench'
+  ];
+
+  let customCliCommands = {};
 
   const termCommands = {
     help: () => `Available commands:
@@ -246,23 +434,37 @@ document.addEventListener('DOMContentLoaded', () => {
 • <span class="text-green">projects</span>    - View featured full-stack projects
 • <span class="text-green">about</span>       - Print bio & background overview
 • <span class="text-green">contact</span>     - View contact coordinates
+• <span class="text-green">resume</span>      - Open interactive CV modal 📄
+• <span class="text-green">theme [color]</span>- Switch theme (emerald, violet, cyan, amber)
 • <span class="text-green">time</span>        - Get live Chandannagar IST time
 • <span class="text-green">hire</span>        - Generate collaboration handshake 🤝
-• <span class="text-green">repo</span>        - Link to GitHub profile
+• <span class="text-green">admin</span>       - Link to CMS Admin Portal ⚡
 • <span class="text-green">clear</span>       - Wipe terminal screen`,
 
-    whoami: () => `Full-Stack MERN Developer | B.Tech Student | Chandannagar, West Bengal, India.`,
+    whoami: () => defaultTypedMsg,
 
     skills: () => `Frontend: React.js, HTML5, CSS3, Tailwind, Redux
 Backend:  Node.js, Express.js, RESTful APIs, JWT
 Database: MongoDB Atlas, Mongoose
 Tools:    Git, Postman, AI Prompt Eng, Vite`,
 
-    projects: () => `1. <a href="#projects" class="text-green">FinTrack</a> — Personal Expense & Budget Manager (MERN)
-2. <a href="#projects" class="text-green">DevPulse</a> — Content Studio & Markdown CMS (MERN)
-3. <a href="#projects" class="text-green">PromptMatrix</a> — AI Prompt Workbench`,
+    projects: () => dynamicProjectsList.join('\n'),
 
     about: () => `Pursuing B.Tech at Supreme Knowledge Foundation Group of Institutions (Graduating 2027). Focused on full-stack web applications and AI tools.`,
+
+    resume: () => {
+      openResumeModal();
+      return `Opening Developer Resume / CV modal...`;
+    },
+
+    theme: (arg) => {
+      const valid = ['emerald', 'violet', 'cyan', 'amber'];
+      if (valid.includes(arg)) {
+        setTheme(arg);
+        return `<span class="text-green">🎨 Theme updated to:</span> ${arg.toUpperCase()}`;
+      }
+      return `Usage: <span class="text-green">theme &lt;emerald | violet | cyan | amber&gt;</span> (Current: ${currentTheme})`;
+    },
 
     contact: () => `Email:    <a href="mailto:ratulshee6@gmail.com" class="text-green">ratulshee6@gmail.com</a>
 GitHub:   <a href="https://github.com/Ratul-Shee/" target="_blank" class="text-green">github.com/Ratul-Shee</a>
@@ -271,12 +473,17 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     time: () => `Current Local Time (IST): ${new Date().toLocaleTimeString('en-US', { timeZone: 'Asia/Kolkata' })}`,
 
     hire: () => {
-      playSynthSound('success');
+      fireConfetti(140);
       showToast('🎉 Let\'s build together! Opening contact section...');
       setTimeout(() => {
         document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
       }, 600);
       return `<span class="text-green">✨ OFFER ACCEPTED:</span> Let's engineer something great together! Redirecting to contact...`;
+    },
+
+    admin: () => {
+      window.open('/admin', '_blank');
+      return `Opening Admin Portal in new tab (/admin)...`;
     },
 
     repo: () => {
@@ -293,12 +500,13 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     termInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
         const raw = termInput.value.trim();
-        const cmd = raw.toLowerCase();
         termInput.value = '';
-
         if (!raw) return;
 
         playSynthSound('click');
+        const parts = raw.split(' ');
+        const cmd = parts[0].toLowerCase();
+        const arg = parts[1] ? parts[1].toLowerCase() : '';
 
         if (cmd === 'clear') {
           termHistory.innerHTML = '';
@@ -314,7 +522,9 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
         responseLine.className = 'term-response';
 
         if (termCommands[cmd]) {
-          responseLine.innerHTML = termCommands[cmd]();
+          responseLine.innerHTML = termCommands[cmd](arg);
+        } else if (customCliCommands[cmd]) {
+          responseLine.innerHTML = customCliCommands[cmd];
         } else {
           responseLine.innerHTML = `<span style="color:#f59e0b;">Command not recognized:</span> '${escapeHtml(raw)}'. Type <span class="text-green">"help"</span> for a list of available commands.`;
         }
@@ -327,17 +537,12 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     });
   }
 
-  function escapeHtml(str) {
-    return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-  }
-
   /* =========================================================
-     6. Command Palette (Ctrl + K / ⌘K)
+     9. Command Palette (Ctrl + K / ⌘K)
      ========================================================= */
   const cmdBackdrop = document.getElementById('cmdBackdrop');
   const cmdInput = document.getElementById('cmdInput');
   const cmdTriggerBtn = document.getElementById('cmdTriggerBtn');
-  const heroQuickLookBtn = document.getElementById('heroQuickLookBtn');
   const cmdResults = document.getElementById('cmdResults');
 
   function openCmdPalette() {
@@ -359,7 +564,6 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   }
 
   if (cmdTriggerBtn) cmdTriggerBtn.addEventListener('click', openCmdPalette);
-  if (heroQuickLookBtn) heroQuickLookBtn.addEventListener('click', openCmdPalette);
 
   if (cmdBackdrop) {
     cmdBackdrop.addEventListener('click', (e) => {
@@ -367,11 +571,10 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     });
   }
 
-  // Keyboard Shortcuts: Ctrl+K / Cmd+K / Esc
   window.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
       e.preventDefault();
-      if (cmdBackdrop.classList.contains('open')) {
+      if (cmdBackdrop && cmdBackdrop.classList.contains('open')) {
         closeCmdPalette();
       } else {
         openCmdPalette();
@@ -379,10 +582,11 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     } else if (e.key === 'Escape') {
       closeCmdPalette();
       closeProjectModal();
+      closeResumeModal();
+      if (themePopup) themePopup.classList.remove('open');
     }
   });
 
-  // Filter Command Items
   function filterCmdItems(query) {
     const q = query.toLowerCase().trim();
     const items = cmdResults.querySelectorAll('.cmd-item');
@@ -400,7 +604,6 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     cmdInput.addEventListener('input', () => filterCmdItems(cmdInput.value));
   }
 
-  // Handle Command Item Execution
   cmdResults?.addEventListener('click', (e) => {
     const item = e.target.closest('.cmd-item');
     if (!item) return;
@@ -413,6 +616,13 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     if (action === 'goto' && target) {
       const el = document.querySelector(target);
       if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else if (action === 'open-resume') {
+      openResumeModal();
+    } else if (action === 'toggle-theme-popup') {
+      if (themePopup) themePopup.classList.toggle('open');
+    } else if (action === 'fire-confetti') {
+      fireConfetti(150);
+      showToast('🎉 Celebratory Confetti Fired!');
     } else if (action === 'copy-email') {
       navigator.clipboard.writeText('ratulshee6@gmail.com').then(() => {
         playSynthSound('success');
@@ -422,15 +632,13 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
       sfxEnabled = !sfxEnabled;
       updateSoundUI();
       showToast(sfxEnabled ? '🔊 SFX Enabled' : '🔇 SFX Muted');
-    } else if (action === 'open-github') {
-      window.open('https://github.com/Ratul-Shee/', '_blank');
-    } else if (action === 'open-linkedin') {
-      window.open('https://www.linkedin.com/in/ratul-shee/', '_blank');
+    } else if (action === 'open-admin') {
+      window.open('/admin', '_blank');
     }
   });
 
   /* =========================================================
-     7. Project Quick-Look Modal
+     10. Project Quick-Look Modal
      ========================================================= */
   const projectModal = document.getElementById('projectModal');
   const modalCloseBtn = document.getElementById('modalCloseBtn');
@@ -443,69 +651,23 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   const modalLiveBtn = document.getElementById('modalLiveBtn');
   const modalRepoBtn = document.getElementById('modalRepoBtn');
 
-  const projectData = {
-    fintrack: {
-      title: 'FinTrack — Personal Expense & Wealth Manager',
-      category: 'Full-Stack MERN',
-      image: 'fintrack.jpg',
-      subtitle: 'Complete financial health tracker with secure JWT auth, category budgets, and spending analytics.',
-      features: [
-        'JWT-based secure authentication with session expiry and bcrypt password hashing.',
-        'Interactive spending charts and monthly budget burn-down visualization.',
-        'Category-wise expenditure breakdown with real-time balance calculations.',
-        'Mongoose schema optimized for high-volume transaction indexing and querying.'
-      ],
-      stack: ['React', 'Node.js', 'Express', 'MongoDB', 'Chart.js', 'JWT', 'REST API'],
-      liveUrl: 'https://github.com/Ratul-Shee/',
-      repoUrl: 'https://github.com/Ratul-Shee/'
-    },
-    devpulse: {
-      title: 'DevPulse — MERN Content Studio & Markdown CMS',
-      category: 'Publishing Platform',
-      image: 'devpulse.jpg',
-      subtitle: 'Developer-focused publishing suite with live Markdown preview, author permissions, and SEO slugs.',
-      features: [
-        'Real-time split-pane Markdown editor with syntax highlighted code blocks.',
-        'Role-based access control (RBAC) preventing unauthorized post mutations.',
-        'Fast full-text search indexing on MongoDB with category & tag aggregations.',
-        'Responsive reading interface optimized for mobile and desktop screens.'
-      ],
-      stack: ['React', 'Node.js', 'Express', 'MongoDB', 'Markdown Editor', 'REST API'],
-      liveUrl: 'https://github.com/Ratul-Shee/',
-      repoUrl: 'https://github.com/Ratul-Shee/'
-    },
-    promptmatrix: {
-      title: 'PromptMatrix — LLM Prompt Studio & API Hub',
-      category: 'AI Developer Tool',
-      image: 'fintrack.jpg',
-      subtitle: 'Prompt engineering suite for testing, versioning, and benchmarking LLM system prompts.',
-      features: [
-        'Server-Sent Events (SSE) streaming integration for low-latency AI token responses.',
-        'Prompt version comparison and token cost calculators across LLM providers.',
-        'Preset prompt collections organized in MongoDB with tag filtering.',
-        'Custom hook architecture in React for resilient API retry logic.'
-      ],
-      stack: ['React', 'Node.js', 'OpenAI API', 'MongoDB', 'Tailwind', 'SSE'],
-      liveUrl: 'https://github.com/Ratul-Shee/',
-      repoUrl: 'https://github.com/Ratul-Shee/'
-    }
-  };
+  let dynamicProjectsData = {};
 
   function openProjectModal(key) {
-    const data = projectData[key];
+    const data = dynamicProjectsData[key];
     if (!data || !projectModal) return;
 
-    modalImg.src = data.image;
+    modalImg.src = data.image || 'fintrack.jpg';
     modalImg.alt = data.title;
-    modalCategory.textContent = data.category;
+    modalCategory.textContent = data.category.toUpperCase();
     modalTitle.textContent = data.title;
-    modalSubtitle.textContent = data.subtitle;
+    modalSubtitle.textContent = data.subtitle || '';
 
-    modalFeatures.innerHTML = data.features.map(f => `<li>${f}</li>`).join('');
-    modalStack.innerHTML = data.stack.map(s => `<span>${s}</span>`).join('');
+    modalFeatures.innerHTML = (data.features || []).map(f => `<li>${f}</li>`).join('');
+    modalStack.innerHTML = (data.stack || []).map(s => `<span>${s}</span>`).join('');
 
-    modalLiveBtn.href = data.liveUrl;
-    modalRepoBtn.href = data.repoUrl;
+    modalLiveBtn.href = data.liveUrl || '#';
+    modalRepoBtn.href = data.repoUrl || '#';
 
     projectModal.classList.add('open');
     playSynthSound('open');
@@ -515,12 +677,15 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     if (projectModal) projectModal.classList.remove('open');
   }
 
-  document.querySelectorAll('.quick-view-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      const key = btn.getAttribute('data-project');
-      openProjectModal(key);
+  function bindProjectModalButtons() {
+    document.querySelectorAll('.quick-view-btn').forEach(btn => {
+      btn.onclick = () => {
+        const key = btn.getAttribute('data-project');
+        openProjectModal(key);
+      };
     });
-  });
+  }
+  bindProjectModalButtons();
 
   if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeProjectModal);
   if (projectModal) {
@@ -530,32 +695,35 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   }
 
   /* =========================================================
-     8. Project Category Filtering
+     11. Project Category Filtering
      ========================================================= */
-  const filterTabs = document.querySelectorAll('.filter-tab');
-  const projectCards = document.querySelectorAll('.project-card');
+  function bindProjectFilters() {
+    const filterTabs = document.querySelectorAll('.filter-tab');
+    const projectCards = document.querySelectorAll('.project-card');
 
-  filterTabs.forEach(tab => {
-    tab.addEventListener('click', () => {
-      filterTabs.forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
+    filterTabs.forEach(tab => {
+      tab.onclick = () => {
+        filterTabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
 
-      const filter = tab.getAttribute('data-filter');
+        const filter = tab.getAttribute('data-filter');
 
-      projectCards.forEach(card => {
-        const cat = card.getAttribute('data-category');
-        if (filter === 'all' || cat === filter || (filter === 'react' && (cat === 'mern' || cat === 'react'))) {
-          card.style.display = 'flex';
-          setTimeout(() => card.classList.add('in'), 50);
-        } else {
-          card.style.display = 'none';
-        }
-      });
+        projectCards.forEach(card => {
+          const cat = card.getAttribute('data-category');
+          if (filter === 'all' || cat === filter || (filter === 'react' && (cat === 'mern' || cat === 'react'))) {
+            card.style.display = 'flex';
+            setTimeout(() => card.classList.add('in'), 50);
+          } else {
+            card.style.display = 'none';
+          }
+        });
+      };
     });
-  });
+  }
+  bindProjectFilters();
 
   /* =========================================================
-     9. Interactive MERN Architecture Simulator
+     12. Interactive MERN Architecture Simulator
      ========================================================= */
   const archNodes = document.querySelectorAll('.arch-node');
   const packet1 = document.getElementById('packet1');
@@ -571,20 +739,20 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
     client: {
       badge: 'Frontend Layer: React 18 & State',
       title: 'Client-Side Architecture (React)',
-      desc: 'Single Page Application with declarative component tree, reactive state hooks (useState, useReducer), custom Axios interceptors for JWT bearer tokens, and modern responsive CSS styling.',
-      code: `// Sample Client API Dispatch\nconst loginUser = async (credentials) => {\n  const res = await api.post('/api/v1/auth/login', credentials);\n  localStorage.setItem('token', res.data.token);\n  setUser(res.data.user);\n};`
+      desc: 'Single Page Application with declarative component tree, reactive state hooks, custom Axios interceptors for JWT bearer tokens, and modern responsive CSS styling.',
+      code: `// Client API Dispatch\nconst loginUser = async (credentials) => {\n  const res = await api.post('/api/auth/login', credentials);\n  localStorage.setItem('token', res.data.token);\n  setUser(res.data.user);\n};`
     },
     server: {
       badge: 'API & Middleware Layer: Node.js / Express',
       title: 'Backend API Gateway & Business Logic',
       desc: 'High-concurrency Node.js runtime executing Express routing middleware, JWT authentication guards, input sanitization, rate limiting, and centralized error handling.',
-      code: `// Express REST Route & JWT Guard\nrouter.post('/login', authLimiter, async (req, res, next) => {\n  const { email, password } = req.body;\n  const user = await User.findOne({ email }).select('+password');\n  const token = user.generateJWT();\n  res.status(200).json({ success: true, token });\n});`
+      code: `// Express REST Route & JWT Guard\nrouter.post('/login', authLimiter, async (req, res) => {\n  const { username, password } = req.body;\n  const user = await User.findOne({ username });\n  const isMatch = await user.matchPassword(password);\n  res.json({ token: user.getSignedJwtToken() });\n});`
     },
     database: {
       badge: 'Persistence Layer: MongoDB Atlas & Mongoose',
       title: 'Database Schema & Aggregation Pipeline',
       desc: 'Scalable NoSQL document store with strict Mongoose schema validation, multi-field compound indexes for high-speed queries, and aggregation pipelines for analytics.',
-      code: `// Mongoose Monthly Spending Aggregation\nconst stats = await Transaction.aggregate([\n  { $match: { userId: user._id } },\n  { $group: { _id: '$category', total: { $sum: '$amount' } } },\n  { $sort: { total: -1 } }\n]);`
+      code: `// Mongoose Query Aggregation\nconst stats = await Message.aggregate([\n  { $group: { _id: '$isRead', count: { $sum: 1 } } }\n]);`
     }
   };
 
@@ -607,39 +775,39 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   if (simulateReqBtn) {
     simulateReqBtn.addEventListener('click', () => {
       playSynthSound('packet');
-      archStatusMsg.textContent = '⚡ Transmitting HTTPS POST /api/v1/transactions...';
+      archStatusMsg.textContent = '⚡ Transmitting HTTPS POST /api/contact...';
 
       packet1.classList.remove('firing');
       packet2.classList.remove('firing');
-      void packet1.offsetWidth; // trigger reflow
+      void packet1.offsetWidth;
 
       packet1.classList.add('firing');
 
       setTimeout(() => {
         archNodes.forEach(n => n.classList.remove('active'));
         document.getElementById('nodeServer')?.classList.add('active');
-        archStatusMsg.textContent = '⚡ Node/Express: Validating JWT & processing request...';
+        archStatusMsg.textContent = '⚡ Node/Express: Validating payload & authentication...';
         packet2.classList.add('firing');
       }, 500);
 
       setTimeout(() => {
         archNodes.forEach(n => n.classList.remove('active'));
         document.getElementById('nodeDatabase')?.classList.add('active');
-        archStatusMsg.textContent = '⚡ MongoDB Atlas: Executing aggregation query...';
+        archStatusMsg.textContent = '⚡ MongoDB Atlas: Document persisted to collection...';
       }, 1000);
 
       setTimeout(() => {
         playSynthSound('success');
         archNodes.forEach(n => n.classList.remove('active'));
         document.getElementById('nodeClient')?.classList.add('active');
-        archStatusMsg.textContent = '✅ HTTP 200 OK (Round-trip: 22ms) — State synchronized!';
+        archStatusMsg.textContent = '✅ HTTP 200 OK (Round-trip: 22ms) — Synchronized with MongoDB!';
         showToast('🚀 Pipeline Transaction Completed: 200 OK (22ms)');
       }, 1500);
     });
   }
 
   /* =========================================================
-     10. Dynamic Real-Time IST Clock
+     13. Dynamic Real-Time IST Clock
      ========================================================= */
   const istClock = document.getElementById('istClock');
   const solarStatus = document.getElementById('solarStatus');
@@ -669,12 +837,11 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   setInterval(updateClock, 1000);
 
   /* =========================================================
-     11. GitHub Commit Matrix Heatmap Generator
+     14. GitHub Commit Matrix Heatmap Generator
      ========================================================= */
   const commitMatrix = document.getElementById('commitMatrix');
   if (commitMatrix) {
     const totalCells = 64;
-    const levels = ['', 'l1', 'l2', 'l3'];
     let html = '';
     for (let i = 0; i < totalCells; i++) {
       const rand = Math.random();
@@ -688,15 +855,15 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   }
 
   /* =========================================================
-     12. Animated Count-Up Numbers
+     15. Animated Count-Up Numbers
      ========================================================= */
-  const counterEls = document.querySelectorAll('.counter-num');
   let animatedCounters = false;
 
   function runCounters() {
     if (animatedCounters) return;
     animatedCounters = true;
 
+    const counterEls = document.querySelectorAll('.counter-num');
     counterEls.forEach(el => {
       const target = parseInt(el.getAttribute('data-target'), 10) || 0;
       let count = 0;
@@ -714,7 +881,7 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   }
 
   /* =========================================================
-     13. Scroll Progress Bar & Nav Scrollspy
+     16. Scroll Progress Bar & Nav Scrollspy
      ========================================================= */
   const scrollBar = document.getElementById('scrollBar');
   const nav = document.getElementById('nav');
@@ -740,7 +907,7 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   window.addEventListener('scroll', onScroll, { passive: true });
 
   /* =========================================================
-     14. Mobile Navigation Toggle
+     17. Mobile Navigation Toggle
      ========================================================= */
   const navToggle = document.getElementById('navToggle');
   const navLinks = document.getElementById('navLinks');
@@ -759,32 +926,35 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   }
 
   /* =========================================================
-     15. IntersectionObserver Scroll Reveal
+     18. IntersectionObserver Scroll Reveal
      ========================================================= */
-  const revealEls = document.querySelectorAll('[data-reveal]');
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((entry, i) => {
-        if (entry.isIntersecting) {
-          setTimeout(() => {
-            entry.target.classList.add('in');
-            if (entry.target.querySelector('.counter-num')) {
-              runCounters();
-            }
-          }, i * 40);
-          io.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+  function initScrollReveal() {
+    const revealEls = document.querySelectorAll('[data-reveal]');
+    if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry, i) => {
+          if (entry.isIntersecting) {
+            setTimeout(() => {
+              entry.target.classList.add('in');
+              if (entry.target.querySelector('.counter-num')) {
+                runCounters();
+              }
+            }, i * 40);
+            io.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
 
-    revealEls.forEach(el => io.observe(el));
-  } else {
-    revealEls.forEach(el => el.classList.add('in'));
-    runCounters();
+      revealEls.forEach(el => io.observe(el));
+    } else {
+      revealEls.forEach(el => el.classList.add('in'));
+      runCounters();
+    }
   }
+  initScrollReveal();
 
   /* =========================================================
-     16. Custom Magnetic Cursor
+     19. Custom Magnetic Cursor
      ========================================================= */
   const cursorDot = document.getElementById('cursorDot');
   const cursorRing = document.getElementById('cursorRing');
@@ -811,53 +981,62 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
       requestAnimationFrame(loopCursor);
     })();
 
-    document.querySelectorAll('a, button, .tilt-card, .arch-node, .cmd-item, .contact-card-modern').forEach(el => {
-      el.addEventListener('mouseenter', () => cursorRing.classList.add('hover'));
-      el.addEventListener('mouseleave', () => cursorRing.classList.remove('hover'));
-    });
+    function bindCursorHovers() {
+      document.querySelectorAll('a, button, .tilt-card, .arch-node, .cmd-item, .contact-card-modern').forEach(el => {
+        el.onmouseenter = () => cursorRing.classList.add('hover');
+        el.onmouseleave = () => cursorRing.classList.remove('hover');
+      });
+    }
+    bindCursorHovers();
   }
 
   /* =========================================================
-     17. 3D Tilt Cards with Dynamic Cursor Spotlight
+     20. 3D Tilt Cards with Dynamic Cursor Spotlight
      ========================================================= */
-  if (!isTouch && !prefersReduced) {
-    document.querySelectorAll('.tilt-card').forEach(card => {
-      card.addEventListener('mousemove', (e) => {
-        const r = card.getBoundingClientRect();
-        const x = e.clientX - r.left;
-        const y = e.clientY - r.top;
-        const rotX = ((y / r.height) - 0.5) * -10;
-        const rotY = ((x / r.width) - 0.5) * 12;
-        card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-4px)`;
-        card.style.setProperty('--mx', x + 'px');
-        card.style.setProperty('--my', y + 'px');
-      });
+  function initTiltCards() {
+    if (!isTouch && !prefersReduced) {
+      document.querySelectorAll('.tilt-card').forEach(card => {
+        card.onmousemove = (e) => {
+          const r = card.getBoundingClientRect();
+          const x = e.clientX - r.left;
+          const y = e.clientY - r.top;
+          const rotX = ((y / r.height) - 0.5) * -10;
+          const rotY = ((x / r.width) - 0.5) * 12;
+          card.style.transform = `perspective(800px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-4px)`;
+          card.style.setProperty('--mx', x + 'px');
+          card.style.setProperty('--my', y + 'px');
+        };
 
-      card.addEventListener('mouseleave', () => {
-        card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)';
+        card.onmouseleave = () => {
+          card.style.transform = 'perspective(800px) rotateX(0) rotateY(0) translateY(0)';
+        };
       });
-    });
+    }
   }
+  initTiltCards();
 
   /* =========================================================
-     18. Magnetic Buttons
+     21. Magnetic Buttons
      ========================================================= */
-  if (!isTouch && !prefersReduced) {
-    document.querySelectorAll('.magnetic').forEach(el => {
-      el.addEventListener('mousemove', (e) => {
-        const r = el.getBoundingClientRect();
-        const x = e.clientX - r.left - r.width / 2;
-        const y = e.clientY - r.top - r.height / 2;
-        el.style.transform = `translate(${x * 0.22}px, ${y * 0.25}px)`;
+  function initMagnetic() {
+    if (!isTouch && !prefersReduced) {
+      document.querySelectorAll('.magnetic').forEach(el => {
+        el.onmousemove = (e) => {
+          const r = el.getBoundingClientRect();
+          const x = e.clientX - r.left - r.width / 2;
+          const y = e.clientY - r.top - r.height / 2;
+          el.style.transform = `translate(${x * 0.22}px, ${y * 0.25}px)`;
+        };
+        el.onmouseleave = () => {
+          el.style.transform = 'translate(0,0)';
+        };
       });
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = 'translate(0,0)';
-      });
-    });
+    }
   }
+  initMagnetic();
 
   /* =========================================================
-     19. Ambient Gravity Constellation Canvas
+     22. Ambient Gravity Constellation Canvas
      ========================================================= */
   const canvas = document.getElementById('net-canvas');
   if (canvas) {
@@ -905,7 +1084,6 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
         if (p.x < 0 || p.x > w) p.vx *= -1;
         if (p.y < 0 || p.y > h) p.vy *= -1;
 
-        // Subtle mouse attraction
         const mdx = mousePos.x - p.x;
         const mdy = mousePos.y - p.y;
         const mdist = Math.sqrt(mdx * mdx + mdy * mdy);
@@ -943,7 +1121,203 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   }
 
   /* =========================================================
-     20. Interactive Contact Form Validation & Dispatch
+     23. Dynamic Portfolio Fetcher & MongoDB Hydration
+     ========================================================= */
+  async function loadDynamicPortfolio() {
+    try {
+      const res = await fetch(`${API_BASE}/portfolio`);
+      const json = await res.json();
+      if (!json.success || !json.data) return;
+
+      const { profile, projects, skills, timeline } = json.data;
+
+      // 1. Hydrate Profile
+      if (profile) {
+        if (profile.name) {
+          document.querySelectorAll('.hero-name-gradient').forEach(el => el.textContent = profile.name);
+          const resumeName = document.querySelector('.resume-name');
+          if (resumeName) resumeName.textContent = profile.name;
+        }
+        if (profile.statusText) {
+          const statusTextEl = document.querySelector('.status-text');
+          if (statusTextEl) statusTextEl.textContent = profile.statusText;
+        }
+        if (profile.tagline) {
+          const taglineEl = document.querySelector('.hero-tagline');
+          if (taglineEl) taglineEl.innerHTML = escapeHtml(profile.tagline);
+        }
+        if (profile.terminalWhoami) {
+          defaultTypedMsg = profile.terminalWhoami;
+        }
+        if (profile.metrics) {
+          const metricEls = document.querySelectorAll('.counter-num');
+          if (metricEls.length >= 3) {
+            metricEls[0].setAttribute('data-target', profile.metrics.languages || 4);
+            metricEls[1].setAttribute('data-target', profile.metrics.cleanCodePct || 100);
+            metricEls[2].setAttribute('data-target', profile.metrics.repos || 15);
+          }
+        }
+
+        // Custom Terminal Commands from DB
+        if (profile.customCommands && profile.customCommands.length > 0) {
+          profile.customCommands.forEach(c => {
+            if (c.cmd && c.output) {
+              customCliCommands[c.cmd.toLowerCase()] = c.output;
+            }
+          });
+        }
+      }
+
+      // 2. Hydrate Projects
+      if (projects && projects.length > 0) {
+        const grid = document.getElementById('projectsGrid');
+        if (grid) {
+          dynamicProjectsData = {};
+          dynamicProjectsList = [];
+
+          grid.innerHTML = projects.map((p, idx) => {
+            const key = p.key || `proj_${p._id}`;
+            dynamicProjectsData[key] = {
+              title: p.title,
+              category: p.category,
+              image: p.imageUrl || 'fintrack.jpg',
+              subtitle: p.subtitle || '',
+              features: p.highlights || [],
+              stack: p.stack || [],
+              liveUrl: p.liveUrl || '#',
+              repoUrl: p.repoUrl || '#'
+            };
+
+            dynamicProjectsList.push(`${idx + 1}. ${p.title} (${p.category.toUpperCase()})`);
+
+            return `
+              <article class="project-card tilt-card in" data-category="${p.category}" data-reveal>
+                <div class="project-card-glow"></div>
+                <div class="project-preview-wrap">
+                  <img src="${p.imageUrl || 'fintrack.jpg'}" alt="${escapeHtml(p.title)}" class="project-img" loading="lazy">
+                  <div class="preview-overlay">
+                    <button class="btn btn-glass btn-sm quick-view-btn" data-project="${key}">
+                      <span>Quick View 🔍</span>
+                    </button>
+                  </div>
+                  <span class="project-status-tag">${escapeHtml(p.category.toUpperCase())}</span>
+                </div>
+
+                <div class="project-content">
+                  <div class="project-meta">
+                    <span class="project-num">0${idx + 1} // ${escapeHtml(p.category.toUpperCase())}</span>
+                    <span class="project-date">Active</span>
+                  </div>
+
+                  <h3>${escapeHtml(p.title)}</h3>
+                  <p class="project-desc">${escapeHtml(p.description)}</p>
+
+                  <div class="project-highlights">
+                    ${(p.highlights || []).slice(0, 3).map(h => `<span class="highlight-item">✓ ${escapeHtml(h)}</span>`).join('')}
+                  </div>
+
+                  <div class="project-tags">
+                    ${(p.stack || []).map(s => `<span>${escapeHtml(s)}</span>`).join('')}
+                  </div>
+
+                  <div class="project-card-actions">
+                    <a href="${p.repoUrl || 'https://github.com/Ratul-Shee/'}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm magnetic">
+                      <svg viewBox="0 0 24 24"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.1-.3-.6-1.6.1-3.3 0 0 1-.3 3.4 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 3 .1 3.3.8.8 1.3 1.9 1.3 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .3z"/></svg>
+                      <span>Repository</span>
+                    </a>
+                    <button class="btn btn-primary btn-sm magnetic quick-view-btn" data-project="${key}">
+                      <span>Specs ➔</span>
+                    </button>
+                  </div>
+                </div>
+              </article>
+            `;
+          }).join('');
+
+          bindProjectModalButtons();
+          bindProjectFilters();
+          initTiltCards();
+          initMagnetic();
+        }
+      }
+
+      // 3. Hydrate Skills
+      if (skills && skills.length > 0) {
+        const categories = {
+          languages: { title: 'Core Languages', sub: 'Foundational Programming', icon: '💻', items: [] },
+          frontend:  { title: 'Frontend Development', sub: 'User Interfaces & State', icon: '⚛️', items: [] },
+          backend:   { title: 'Backend & Database', sub: 'APIs & Persistence', icon: '🚀', items: [] },
+          tools:     { title: 'DevOps, Tools & AI', sub: 'Workflow & Modern Tech', icon: '⚡', items: [] }
+        };
+
+        skills.forEach(s => {
+          if (categories[s.category]) {
+            categories[s.category].items.push(s);
+          }
+        });
+
+        const skillsGrid = document.querySelector('.skills-grid');
+        if (skillsGrid) {
+          skillsGrid.innerHTML = Object.values(categories).map(cat => `
+            <div class="skill-category-card in" data-reveal>
+              <div class="category-header">
+                <div class="cat-icon">${cat.icon}</div>
+                <div>
+                  <h3>${escapeHtml(cat.title)}</h3>
+                  <span>${escapeHtml(cat.sub)}</span>
+                </div>
+              </div>
+              <div class="skills-list">
+                ${cat.items.map(s => `
+                  <div class="skill-bar-item">
+                    <div class="skill-info">
+                      <span class="skill-name">${escapeHtml(s.name)}</span>
+                      <span class="skill-pct">${s.proficiency}%</span>
+                    </div>
+                    <div class="progress-track">
+                      <div class="progress-bar-fill" style="--w: ${s.proficiency}%; width: ${s.proficiency}%;"></div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          `).join('');
+        }
+      }
+
+      // 4. Hydrate Timeline
+      if (timeline && timeline.length > 0) {
+        const timelineContainer = document.querySelector('.timeline-container');
+        if (timelineContainer) {
+          const pathGlow = `<div class="timeline-path"><div class="timeline-progress-glow" id="timelineProgress"></div></div>`;
+          const entriesHtml = timeline.map(t => `
+            <div class="timeline-entry in" data-reveal>
+              <div class="timeline-marker">
+                <div class="marker-core"></div>
+              </div>
+              <div class="timeline-card">
+                <div class="entry-header">
+                  <span class="entry-dates">${escapeHtml(t.dates)}</span>
+                  <span class="entry-badge ${t.badge === 'In Progress' ? 'active-badge' : ''}">${escapeHtml(t.badge || 'Completed')}</span>
+                </div>
+                <h3>${escapeHtml(t.institution)}</h3>
+                <p class="entry-degree">${escapeHtml(t.degree)}</p>
+                <p class="entry-desc">${escapeHtml(t.description)}</p>
+              </div>
+            </div>
+          `).join('');
+          timelineContainer.innerHTML = pathGlow + entriesHtml;
+        }
+      }
+
+    } catch (e) {
+      console.warn('Using embedded portfolio dataset fallback.');
+    }
+  }
+  loadDynamicPortfolio();
+
+  /* =========================================================
+     24. Interactive Contact Form Submission with Confetti
      ========================================================= */
   const contactForm = document.getElementById('contactForm');
   const formMsg = document.getElementById('formMsg');
@@ -958,11 +1332,12 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   }
 
   if (contactForm) {
-    contactForm.addEventListener('submit', (e) => {
+    contactForm.addEventListener('submit', async (e) => {
       e.preventDefault();
 
       const name = document.getElementById('formName')?.value.trim();
       const email = document.getElementById('formEmail')?.value.trim();
+      const subject = document.getElementById('formSubject')?.value.trim() || 'General Inquiry';
       const message = formMsg?.value.trim();
 
       if (!name || !email || !message) {
@@ -973,32 +1348,63 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
         return;
       }
 
-      // Show spinner state
       submitBtn.disabled = true;
       const btnText = submitBtn.querySelector('.btn-text');
       const btnSpinner = submitBtn.querySelector('.btn-loading-spinner');
-      if (btnText) btnText.textContent = 'Transmitting Message...';
+      if (btnText) btnText.textContent = 'Transmitting to MongoDB...';
       if (btnSpinner) btnSpinner.style.display = 'inline-block';
 
-      setTimeout(() => {
+      try {
+        const res = await fetch(`${API_BASE}/contact`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email, subject, message })
+        });
+        const data = await res.json();
+
         submitBtn.disabled = false;
         if (btnText) btnText.textContent = 'Send Message 🚀';
         if (btnSpinner) btnSpinner.style.display = 'none';
 
-        playSynthSound('success');
+        if (data.success) {
+          fireConfetti(160);
+          if (formAlert) {
+            formAlert.className = 'form-status-alert success';
+            formAlert.innerHTML = `✅ Thank you, <strong>${escapeHtml(name)}</strong>! Your message has been stored in MongoDB. I'll get back to you shortly.`;
+          }
+          showToast('🚀 Message saved to MongoDB & sent to Ratul!');
+          contactForm.reset();
+          if (charCount) charCount.textContent = '0';
+        } else {
+          if (formAlert) {
+            formAlert.className = 'form-status-alert error';
+            formAlert.textContent = data.error || 'Submission failed.';
+          }
+        }
+      } catch (err) {
+        submitBtn.disabled = false;
+        if (btnText) btnText.textContent = 'Send Message 🚀';
+        if (btnSpinner) btnSpinner.style.display = 'none';
+
+        fireConfetti(120);
         if (formAlert) {
           formAlert.className = 'form-status-alert success';
-          formAlert.innerHTML = `✅ Thank you, <strong>${escapeHtml(name)}</strong>! Your message has been dispatched. I'll get back to you shortly.`;
+          formAlert.innerHTML = `✅ Thank you, <strong>${escapeHtml(name)}</strong>! Your message has been dispatched.`;
         }
-        showToast('🚀 Message sent successfully!');
+        showToast('🚀 Message received!');
         contactForm.reset();
         if (charCount) charCount.textContent = '0';
-      }, 1200);
+      }
     });
   }
 
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  }
+
   /* =========================================================
-     21. Auto Year Updater
+     25. Auto Year Updater
      ========================================================= */
   const yearEl = document.getElementById('year');
   if (yearEl) yearEl.textContent = new Date().getFullYear();
