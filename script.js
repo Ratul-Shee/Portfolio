@@ -915,45 +915,9 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
   initScrollReveal();
 
   /* =========================================================
-     19. Custom Magnetic Cursor
+     19. 3D Tilt Cards with Dynamic Cursor Spotlight
      ========================================================= */
-  const cursorDot = document.getElementById('cursorDot');
-  const cursorRing = document.getElementById('cursorRing');
   const isTouch = window.matchMedia('(max-width:860px)').matches;
-
-  if (!isTouch && !prefersReduced && cursorDot && cursorRing) {
-    let mx = -100, my = -100, rx = -100, ry = -100;
-
-    window.addEventListener('mousemove', (e) => {
-      mx = e.clientX;
-      my = e.clientY;
-      cursorDot.style.left = mx + 'px';
-      cursorDot.style.top = my + 'px';
-    });
-
-    window.addEventListener('mousedown', () => cursorRing.classList.add('active-click'));
-    window.addEventListener('mouseup', () => cursorRing.classList.remove('active-click'));
-
-    (function loopCursor() {
-      rx += (mx - rx) * 0.18;
-      ry += (my - ry) * 0.18;
-      cursorRing.style.left = rx + 'px';
-      cursorRing.style.top = ry + 'px';
-      requestAnimationFrame(loopCursor);
-    })();
-
-    function bindCursorHovers() {
-      document.querySelectorAll('a, button, .tilt-card, .arch-node, .cmd-item, .contact-card-modern').forEach(el => {
-        el.onmouseenter = () => cursorRing.classList.add('hover');
-        el.onmouseleave = () => cursorRing.classList.remove('hover');
-      });
-    }
-    bindCursorHovers();
-  }
-
-  /* =========================================================
-     20. 3D Tilt Cards with Dynamic Cursor Spotlight
-     ========================================================= */
   function initTiltCards() {
     if (!isTouch && !prefersReduced) {
       document.querySelectorAll('.tilt-card').forEach(card => {

@@ -104,10 +104,6 @@ body {
   transition: background-color 0.4s var(--ease);
 }
 
-@media (min-width: 861px) {
-  body { cursor: none; }
-}
-
 ::selection {
   background: var(--neon-green);
   color: #030f08;
@@ -204,51 +200,6 @@ h1, h2, h3, h4 {
   0%   { transform: translate(0, 0) scale(1); }
   50%  { transform: translate(60px, -40px) scale(1.15); }
   100% { transform: translate(-50px, 50px) scale(0.95); }
-}
-
-/* =========================================================
-   Custom Cursor & Glow Follower
-   ========================================================= */
-.cursor-dot, .cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  transition: opacity 0.3s;
-}
-
-.cursor-dot {
-  width: 6px;
-  height: 6px;
-  background: var(--neon-green);
-  box-shadow: 0 0 10px var(--neon-green), 0 0 20px var(--neon-green);
-}
-
-.cursor-ring {
-  width: 36px;
-  height: 36px;
-  border: 1.5px solid var(--neon-green);
-  opacity: 0.7;
-  transition: width 0.25s var(--ease), height 0.25s var(--ease), border-color 0.25s, background-color 0.25s, transform 0.08s linear;
-}
-
-.cursor-ring.hover {
-  width: 60px;
-  height: 60px;
-  border-color: var(--neon-blue);
-  background-color: rgba(56, 189, 248, 0.08);
-  backdrop-filter: invert(15%);
-}
-
-.cursor-ring.active-click {
-  transform: translate(-50%, -50%) scale(0.85);
-}
-
-@media (max-width: 860px) {
-  .cursor-dot, .cursor-ring { display: none !important; }
 }
 
 /* =========================================================
