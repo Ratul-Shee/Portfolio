@@ -1106,13 +1106,16 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
           }
         }
 
-        // Custom Terminal Commands from DB
-        if (profile.customCommands && profile.customCommands.length > 0) {
-          profile.customCommands.forEach(c => {
-            if (c.cmd && c.output) {
-              customCliCommands[c.cmd.toLowerCase()] = c.output;
-            }
-          });
+        // Dynamic Social Links from DB
+        if (profile.socials) {
+          if (profile.socials.github) document.querySelectorAll('a[href*="github.com/"]').forEach(a => a.href = profile.socials.github);
+          if (profile.socials.linkedin) document.querySelectorAll('a[href*="linkedin.com/"]').forEach(a => a.href = profile.socials.linkedin);
+          if (profile.socials.twitter) document.querySelectorAll('a[href*="x.com/"], a[href*="twitter.com/"]').forEach(a => a.href = profile.socials.twitter);
+          if (profile.socials.facebook) document.querySelectorAll('a[href*="facebook.com/"]').forEach(a => a.href = profile.socials.facebook);
+          if (profile.socials.email) {
+            document.querySelectorAll('a[href^="mailto:"]').forEach(a => a.href = `mailto:${profile.socials.email}`);
+            document.querySelectorAll('.copy-email-btn').forEach(btn => btn.setAttribute('data-email', profile.socials.email));
+          }
         }
       }
 

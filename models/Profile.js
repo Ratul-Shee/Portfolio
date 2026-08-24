@@ -15,6 +15,7 @@ const ProfileSchema = new mongoose.Schema({
     github: { type: String, default: 'https://github.com/Ratul-Shee/' },
     linkedin: { type: String, default: 'https://www.linkedin.com/in/ratul-shee/' },
     twitter: { type: String, default: 'https://x.com/RATUL_SHEE_666' },
+    facebook: { type: String, default: 'https://www.facebook.com/ratul.shee.6/' },
     email: { type: String, default: 'ratulshee6@gmail.com' }
   },
   metrics: {

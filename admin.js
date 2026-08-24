@@ -208,6 +208,8 @@ async function loadAllDashboardData() {
         document.getElementById('profGithub').value = profile.socials.github || '';
         document.getElementById('profLinkedin').value = profile.socials.linkedin || '';
         document.getElementById('profTwitter').value = profile.socials.twitter || '';
+        const fbEl = document.getElementById('profFacebook');
+        if (fbEl) fbEl.value = profile.socials.facebook || '';
         document.getElementById('profEmail').value = profile.socials.email || '';
       }
     }
@@ -218,7 +220,7 @@ async function loadAllDashboardData() {
     loadMessages();
 
   } catch (err) {
-    showAdminToast('Failed to load portfolio database.');
+    console.error('Failed to load dashboard data:', err);
   }
 }
 
@@ -228,6 +230,7 @@ if (profileForm) {
   profileForm.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const fbVal = document.getElementById('profFacebook');
     const payload = {
       name: document.getElementById('profName').value.trim(),
       eyebrow: document.getElementById('profEyebrow').value.trim(),
@@ -246,6 +249,7 @@ if (profileForm) {
         github: document.getElementById('profGithub').value.trim(),
         linkedin: document.getElementById('profLinkedin').value.trim(),
         twitter: document.getElementById('profTwitter').value.trim(),
+        facebook: fbVal ? fbVal.value.trim() : 'https://www.facebook.com/ratul.shee.6/',
         email: document.getElementById('profEmail').value.trim()
       }
     };

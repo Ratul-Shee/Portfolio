@@ -49,6 +49,7 @@ const seedData = async () => {
           github: 'https://github.com/Ratul-Shee/',
           linkedin: 'https://www.linkedin.com/in/ratul-shee/',
           twitter: 'https://x.com/RATUL_SHEE_666',
+          facebook: 'https://www.facebook.com/ratul.shee.6/',
           email: 'ratulshee6@gmail.com'
         },
         metrics: {
