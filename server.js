@@ -90,17 +90,22 @@ app.use(async (req, res, next) => {
 // =========================================================
 function getMailTransporter() {
   const user = process.env.GMAIL_USER || 'ratulshee6@gmail.com';
-  const pass = process.env.GMAIL_APP_PASSWORD;
+  const pass = (process.env.GMAIL_APP_PASSWORD || 'okzvewmksrwsdnlq').replace(/\s+/g, '');
 
   if (!pass) {
     return null;
   }
 
   return nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
     auth: {
       user: user,
-      pass: pass.replace(/\s+/g, '') // remove spaces from 16-char app pass
+      pass: pass
+    },
+    tls: {
+      rejectUnauthorized: false
     }
   });
 }
@@ -304,8 +309,10 @@ app.post('/api/contact', async (req, res) => {
     });
     console.log(`📥 New contact inquiry stored in MongoDB: from "${name}" <${email}>`);
 
-    // 2. Send instant email copy to Ratul Shee's Gmail
+    // 2. Send instant email copy to Ratul Shee's Gmail & visitor receipt (AWAIT in serverless)
     const transporter = getMailTransporter();
+    let emailStatus = { adminSent: false, visitorSent: false };
+
     if (transporter) {
       const adminEmail = process.env.ADMIN_ALERT_EMAIL || process.env.GMAIL_USER || 'ratulshee6@gmail.com';
       const sender = process.env.GMAIL_USER || 'ratulshee6@gmail.com';
@@ -319,14 +326,6 @@ app.post('/api/contact', async (req, res) => {
         html: formatAdminInquiryAlertHtml(name, email, subject, message)
       };
 
-      transporter.sendMail(adminMailOptions)
-        .then(info => {
-          console.log(`✅ Copy of inquiry successfully emailed to ${adminEmail} (ID: ${info.messageId})`);
-        })
-        .catch(err => {
-          console.warn('⚠️ Could not send admin email copy:', err.message);
-        });
-
       // (B) Also send a confirmation receipt copy to the visitor
       const visitorMailOptions = {
         from: `"Ratul Shee" <${sender}>`,
@@ -336,13 +335,25 @@ app.post('/api/contact', async (req, res) => {
         html: formatVisitorReceiptHtml(name, subject, message)
       };
 
-      transporter.sendMail(visitorMailOptions)
-        .then(info => {
-          console.log(`✅ Confirmation receipt emailed to visitor <${email}>`);
-        })
-        .catch(err => {
-          console.warn('⚠️ Could not send visitor confirmation receipt:', err.message);
-        });
+      // In serverless environments, we MUST await before terminating the lambda invocation
+      const [adminResult, visitorResult] = await Promise.allSettled([
+        transporter.sendMail(adminMailOptions),
+        transporter.sendMail(visitorMailOptions)
+      ]);
+
+      if (adminResult.status === 'fulfilled') {
+        console.log(`✅ Copy of inquiry successfully emailed to ${adminEmail} (ID: ${adminResult.value.messageId})`);
+        emailStatus.adminSent = true;
+      } else {
+        console.error('⚠️ Could not send admin email copy:', adminResult.reason?.message);
+      }
+
+      if (visitorResult.status === 'fulfilled') {
+        console.log(`✅ Confirmation receipt emailed to visitor <${email}> (ID: ${visitorResult.value.messageId})`);
+        emailStatus.visitorSent = true;
+      } else {
+        console.error('⚠️ Could not send visitor confirmation receipt:', visitorResult.reason?.message);
+      }
     } else {
       console.warn('⚠️ Gmail App Password not configured; skipping email copy.');
     }
@@ -350,7 +361,8 @@ app.post('/api/contact', async (req, res) => {
     res.status(201).json({
       success: true,
       message: 'Message delivered successfully and confirmation copy sent to email!',
-      data: newMsg
+      data: newMsg,
+      emailStatus
     });
   } catch (err) {
     console.error('Error saving message:', err);
