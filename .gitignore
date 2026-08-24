@@ -9,7 +9,7 @@ yarn-error.log*
 .env.local
 .env.production
 
-# Uploads & Temporary Media (optional, keep directory)
+# Uploads & Temporary Media
 uploads/*
 !uploads/.gitkeep
 
