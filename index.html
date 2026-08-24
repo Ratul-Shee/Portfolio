@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ratul Shee — MERN Stack Developer</title>
+<meta name="description" content="Ratul Shee — MERN Stack Developer portfolio. React, Node.js, Express, MongoDB projects, skills and contact.">
+<meta property="og:title" content="Ratul Shee — MERN Stack Developer">
+<meta property="og:description" content="MERN Stack Developer building fast, scalable full-stack applications.">
+<meta property="og:image" content="profile.jpg">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2305080d'/%3E%3Ctext x='50' y='68' font-size='58' text-anchor='middle' fill='%2339ff9c' font-family='monospace'%3E%3C/%3E%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ambient network canvas background -->
+<canvas id="net-canvas"></canvas>
+
+<!-- custom cursor glow + trail -->
+<div class="cursor-dot" id="cursorDot"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- scroll progress bar -->
+<div class="scroll-bar" id="scrollBar"></div>
+
+<!-- boot loader -->
+<div class="boot-screen" id="bootScreen">
+  <div class="boot-terminal">
+    <p><span class="prompt">ratul@dev</span><span class="colon">:~$</span> <span id="bootLine1"></span></p>
+    <p id="bootLine2Wrap"><span class="prompt">ratul@dev</span><span class="colon">:~$</span> <span id="bootLine2"></span></p>
+    <div class="boot-progress"><div class="boot-progress-fill" id="bootFill"></div></div>
+  </div>
+</div>
+
+<!-- NAV -->
+<header class="nav" id="nav">
+  <div class="nav-inner">
+    <a href="#hero" class="logo">
+      <span class="logo-bracket">&lt;</span>Ratul<span class="logo-accent">.Shee</span><span class="logo-bracket">/&gt;</span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#about"><span class="idx">01</span>about</a>
+      <a href="#skills"><span class="idx">02</span>skills</a>
+      <a href="#projects"><span class="idx">03</span>projects</a>
+      <a href="#education"><span class="idx">04</span>education</a>
+      <a href="#contact"><span class="idx">05</span>contact</a>
+    </nav>
+    <a href="#contact" class="nav-cta">get in touch</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero-grid"></div>
+    <div class="hero-inner">
+      <div class="hero-terminal" data-reveal>
+        <div class="term-topbar">
+          <span class="term-dot red"></span><span class="term-dot yellow"></span><span class="term-dot green"></span>
+          <span class="term-title">whoami.sh</span>
+        </div>
+        <div class="term-body">
+          <p><span class="prompt">&gt;</span> whoami</p>
+          <p class="typed-line" id="heroTyped"></p>
+          <p class="term-cursor-line"><span class="blink-cursor">_</span></p>
+        </div>
+      </div>
+
+      <h1 class="hero-title" data-reveal>
+        <span class="hero-title-line">Ratul Shee</span>
+      </h1>
+      <p class="hero-role" data-reveal>
+        <span class="role-tag">MERN</span> Stack Developer &amp; AI Enthusiast
+      </p>
+      <p class="hero-loc" data-reveal>
+        <svg viewBox="0 0 24 24" class="pin-icon"><path d="M12 2C7.6 2 4 5.6 4 10c0 6 8 12 8 12s8-6 8-12c0-4.4-3.6-8-8-8zm0 11a3 3 0 110-6 3 3 0 010 6z"/></svg>
+        Chandannagar, West Bengal, India
+      </p>
+
+      <div class="hero-actions" data-reveal>
+        <a href="#projects" class="btn btn-primary magnetic"><span>View Projects</span></a>
+        <a href="mailto:ratulshee6@gmail.com" class="btn btn-ghost magnetic"><span>Say Hello</span></a>
+      </div>
+
+      <div class="hero-socials" data-reveal>
+        <a href="https://github.com/Ratul-Shee/" target="_blank" rel="noopener" aria-label="GitHub" class="social-orb">
+          <svg viewBox="0 0 24 24"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.1-.3-.6-1.6.1-3.3 0 0 1-.3 3.4 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 3 .1 3.3.8.8 1.3 1.9 1.3 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .3z"/></svg>
+        </a>
+        <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" rel="noopener" aria-label="LinkedIn" class="social-orb">
+          <svg viewBox="0 0 24 24"><path d="M20.4 20.4h-3.5v-5.6c0-1.3 0-3-1.9-3s-2.1 1.4-2.1 2.9v5.7H9.4V9h3.4v1.6h.1c.5-.9 1.6-1.9 3.4-1.9 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4a2 2 0 110-4 2 2 0 010 4zM7 20.4H3.6V9H7v11.4z"/></svg>
+        </a>
+        <a href="https://x.com/RATUL_SHEE_666" target="_blank" rel="noopener" aria-label="X (Twitter)" class="social-orb">
+          <svg viewBox="0 0 24 24"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.6 22H1.5l8.1-9.3L1 2h7.2l5 6.6L18.9 2zm-1.2 18h1.7L7.4 4H5.6l12.1 16z"/></svg>
+        </a>
+        <a href="mailto:ratulshee6@gmail.com" aria-label="Email" class="social-orb">
+          <svg viewBox="0 0 24 24"><path d="M2 5h20a1 1 0 011 1v12a1 1 0 01-1 1H2a1 1 0 01-1-1V6a1 1 0 011-1zm1.5 2.4V17h17V7.4l-8.5 5.9-8.5-5.9zM4 6l8 5.6L20 6H4z"/></svg>
+        </a>
+      </div>
+    </div>
+
+    <div class="scroll-cue" data-reveal>
+      <span>scroll</span>
+      <div class="scroll-line"><div class="scroll-dot"></div></div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="section" id="about">
+    <div class="section-inner about-grid">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow"><span class="idx">01</span> about</span>
+        <h2>Building things that live on <span class="accent-text">MongoDB</span>, run on <span class="accent-text-alt">Node</span>, and render in <span class="accent-text">React</span>.</h2>
+      </div>
+
+      <div class="about-photo" data-reveal>
+        <div class="photo-frame">
+          <div class="photo-ring"></div>
+          <img src="profile.jpg" alt="Ratul Shee — MERN Stack Developer" class="photo-img" id="photoPlaceholder">
+          <div class="photo-scanline"></div>
+          <div class="photo-corner tl"></div>
+          <div class="photo-corner br"></div>
+        </div>
+        <div class="status-chip">
+          <span class="pulse-dot"></span> available for opportunities
+        </div>
+      </div>
+
+      <div class="about-copy" data-reveal>
+        <p>
+          I'm Ratul Shee, a MERN Stack Developer passionate about building fast, scalable and
+          user-friendly web applications. With hands-on experience across
+          <strong>React</strong>, <strong>Node.js</strong>, <strong>Express</strong> and
+          <strong>MongoDB</strong>, I enjoy turning ideas into clean, functional products —
+          end to end, from database schema to pixel.
+        </p>
+        <p>
+          I'm also exploring the intersection of <strong>AI and web development</strong>,
+          constantly learning to build smarter, more capable applications. Currently based in
+          Chandannagar, West Bengal, I'm pursuing my degree while actively working on
+          real-world projects to sharpen my full-stack skills.
+        </p>
+        <div class="about-stats">
+          <div class="stat"><span class="stat-num">4+</span><span class="stat-label">languages</span></div>
+          <div class="stat"><span class="stat-num">2+</span><span class="stat-label">full-stack projects</span></div>
+          <div class="stat"><span class="stat-num">2027</span><span class="stat-label">graduating</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SKILLS -->
+  <section class="section section-alt" id="skills">
+    <div class="section-inner">
+      <div class="section-head center" data-reveal>
+        <span class="eyebrow"><span class="idx">02</span> skills</span>
+        <h2>The stack, and everything around it.</h2>
+      </div>
+
+      <div class="stack-visual" data-reveal id="stackVisual">
+        <div class="stack-node" data-node="mongo">
+          <div class="stack-node-icon">M</div>
+          <span>MongoDB</span>
+        </div>
+        <div class="stack-line"></div>
+        <div class="stack-node" data-node="express">
+          <div class="stack-node-icon">E</div>
+          <span>Express</span>
+        </div>
+        <div class="stack-line"></div>
+        <div class="stack-node" data-node="react">
+          <div class="stack-node-icon">R</div>
+          <span>React</span>
+        </div>
+        <div class="stack-line"></div>
+        <div class="stack-node" data-node="node">
+          <div class="stack-node-icon">N</div>
+          <span>Node.js</span>
+        </div>
+        <div class="pulse-packet" id="pulsePacket"></div>
+      </div>
+
+      <div class="skills-columns">
+        <div class="skill-group" data-reveal>
+          <h3><span class="idx">/languages</span></h3>
+          <ul class="skill-list">
+            <li><span>JavaScript</span><i class="bars b5"></i></li>
+            <li><span>Python</span><i class="bars b4"></i></li>
+            <li><span>Java</span><i class="bars b3"></i></li>
+            <li><span>C</span><i class="bars b3"></i></li>
+            <li><span>PHP</span><i class="bars b3"></i></li>
+          </ul>
+        </div>
+        <div class="skill-group" data-reveal>
+          <h3><span class="idx">/frontend</span></h3>
+          <ul class="skill-list">
+            <li><span>React</span><i class="bars b5"></i></li>
+            <li><span>HTML5</span><i class="bars b5"></i></li>
+            <li><span>CSS3</span><i class="bars b5"></i></li>
+            <li><span>Bootstrap</span><i class="bars b4"></i></li>
+          </ul>
+        </div>
+        <div class="skill-group" data-reveal>
+          <h3><span class="idx">/backend</span></h3>
+          <ul class="skill-list">
+            <li><span>Node.js</span><i class="bars b4"></i></li>
+            <li><span>Express.js</span><i class="bars b4"></i></li>
+            <li><span>MongoDB</span><i class="bars b4"></i></li>
+          </ul>
+        </div>
+        <div class="skill-group" data-reveal>
+          <h3><span class="idx">/tools &amp; more</span></h3>
+          <ul class="skill-list">
+            <li><span>Git &amp; GitHub</span><i class="bars b4"></i></li>
+            <li><span>REST APIs</span><i class="bars b4"></i></li>
+            <li><span>Applied AI Dev</span><i class="bars b4"></i></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="section" id="projects">
+    <div class="section-inner">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow"><span class="idx">03</span> projects</span>
+        <h2>Selected work</h2>
+      </div>
+
+      <div class="projects-grid">
+        <article class="project-card tilt-card" data-reveal>
+          <div class="project-glow"></div>
+          <div class="project-top">
+            <span class="project-tag">full-stack</span>
+            <span class="project-index">01</span>
+          </div>
+          <h3>Personal Expense Manager</h3>
+          <p class="project-desc">
+            A MERN application for tracking personal income and expenses — add transactions,
+            organize them by category, and visualize monthly spending patterns at a glance.
+          </p>
+          <ul class="project-features">
+            <li>Secure user authentication with JWT</li>
+            <li>Category-wise spending breakdown &amp; charts</li>
+            <li>Monthly summaries and running balance</li>
+          </ul>
+          <div class="project-stack">
+            <span>React</span><span>Node.js</span><span>Express</span><span>MongoDB</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/Ratul-Shee/" target="_blank" rel="noopener" class="project-link">
+              <svg viewBox="0 0 24 24"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.1-.3-.6-1.6.1-3.3 0 0 1-.3 3.4 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 3 .1 3.3.8.8 1.3 1.9 1.3 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .3z"/></svg>
+              View Code
+            </a>
+          </div>
+        </article>
+
+        <article class="project-card tilt-card" data-reveal>
+          <div class="project-glow"></div>
+          <div class="project-top">
+            <span class="project-tag">full-stack</span>
+            <span class="project-index">02</span>
+          </div>
+          <h3>Blog Post Manager</h3>
+          <p class="project-desc">
+            A content management app for creating, editing and publishing blog posts, built on
+            the MERN stack with a clean authoring experience and persistent storage in MongoDB.
+          </p>
+          <ul class="project-features">
+            <li>Full CRUD for posts with a rich content editor</li>
+            <li>User authentication and author-only edit/delete</li>
+            <li>Responsive, mobile-friendly reading experience</li>
+          </ul>
+          <div class="project-stack">
+            <span>React</span><span>Node.js</span><span>Express</span><span>MongoDB</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/Ratul-Shee/" target="_blank" rel="noopener" class="project-link">
+              <svg viewBox="0 0 24 24"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.1-.3-.6-1.6.1-3.3 0 0 1-.3 3.4 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 3 .1 3.3.8.8 1.3 1.9 1.3 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .3z"/></svg>
+              View Code
+            </a>
+          </div>
+        </article>
+      </div>
+      <p class="project-note" data-reveal>* Add live demo links and repo URLs once your projects are deployed — search for <code>project-links</code> in index.html.</p>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section class="section section-alt" id="education">
+    <div class="section-inner">
+      <div class="section-head" data-reveal>
+        <span class="eyebrow"><span class="idx">04</span> education</span>
+        <h2>Timeline</h2>
+      </div>
+
+      <div class="timeline">
+        <div class="timeline-line"></div>
+
+        <div class="timeline-item" data-reveal>
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <span class="timeline-date">2024 — 2027</span>
+            <h3>Supreme Knowledge Foundation Group of Institutions</h3>
+            <p>Pursuing my degree while building full-stack MERN projects alongside coursework.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-reveal>
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <span class="timeline-date">Higher Secondary</span>
+            <h3>Nawpara High School</h3>
+            <p>Completed higher secondary education.</p>
+          </div>
+        </div>
+
+        <div class="timeline-item" data-reveal>
+          <div class="timeline-dot"></div>
+          <div class="timeline-card">
+            <span class="timeline-date">Class 5 — 10</span>
+            <h3>Kanailal Vidyamandir (F.S)</h3>
+            <p>Completed secondary schooling.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="section contact-section" id="contact">
+    <div class="section-inner">
+      <div class="section-head center" data-reveal>
+        <span class="eyebrow"><span class="idx">05</span> contact</span>
+        <h2>Let's build something.</h2>
+        <p class="contact-sub">Open to internships, freelance MERN work, and collaborations. Drop a message — I reply fast.</p>
+      </div>
+
+      <div class="contact-grid" data-reveal>
+        <a href="mailto:ratulshee6@gmail.com" class="contact-card magnetic">
+          <svg viewBox="0 0 24 24"><path d="M2 5h20a1 1 0 011 1v12a1 1 0 01-1 1H2a1 1 0 01-1-1V6a1 1 0 011-1zm1.5 2.4V17h17V7.4l-8.5 5.9-8.5-5.9zM4 6l8 5.6L20 6H4z"/></svg>
+          <div><span class="contact-label">Email</span><span class="contact-value">ratulshee6@gmail.com</span></div>
+        </a>
+        <a href="https://github.com/Ratul-Shee/" target="_blank" rel="noopener" class="contact-card magnetic">
+          <svg viewBox="0 0 24 24"><path d="M12 .3a12 12 0 00-3.8 23.4c.6.1.8-.3.8-.6v-2.2c-3.3.7-4-1.6-4-1.6-.6-1.4-1.4-1.8-1.4-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.9 1.3 1.9 1.3 1.1 1.9 2.9 1.3 3.6 1 .1-.8.4-1.3.8-1.6-2.7-.3-5.5-1.3-5.5-6 0-1.3.5-2.4 1.3-3.2-.1-.3-.6-1.6.1-3.3 0 0 1-.3 3.4 1.2a11.5 11.5 0 016 0c2.3-1.5 3.3-1.2 3.3-1.2.7 1.7.2 3 .1 3.3.8.8 1.3 1.9 1.3 3.2 0 4.7-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0012 .3z"/></svg>
+          <div><span class="contact-label">GitHub</span><span class="contact-value">Ratul-Shee</span></div>
+        </a>
+        <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" rel="noopener" class="contact-card magnetic">
+          <svg viewBox="0 0 24 24"><path d="M20.4 20.4h-3.5v-5.6c0-1.3 0-3-1.9-3s-2.1 1.4-2.1 2.9v5.7H9.4V9h3.4v1.6h.1c.5-.9 1.6-1.9 3.4-1.9 3.6 0 4.3 2.4 4.3 5.5v6.2zM5.3 7.4a2 2 0 110-4 2 2 0 010 4zM7 20.4H3.6V9H7v11.4z"/></svg>
+          <div><span class="contact-label">LinkedIn</span><span class="contact-value">ratul-shee</span></div>
+        </a>
+        <a href="https://x.com/RATUL_SHEE_666" target="_blank" rel="noopener" class="contact-card magnetic">
+          <svg viewBox="0 0 24 24"><path d="M18.9 2H22l-7.6 8.7L23.3 22h-7l-5.5-7.2L4.6 22H1.5l8.1-9.3L1 2h7.2l5 6.6L18.9 2zm-1.2 18h1.7L7.4 4H5.6l12.1 16z"/></svg>
+          <div><span class="contact-label">X / Twitter</span><span class="contact-value">@RATUL_SHEE_666</span></div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="section-inner footer-inner">
+    <span>&copy; <span id="year"></span> Ratul Shee — designed &amp; built with the MERN mindset.</span>
+    <a href="#hero" class="footer-top magnetic">back to top ↑</a>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
