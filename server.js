@@ -206,11 +206,11 @@ function formatAdminInquiryAlertHtml(name, email, subject, message) {
 
         <div style="margin-top: 22px;">
           <a href="mailto:${email}?subject=Re: ${encodeURIComponent(subject || 'Portfolio Inquiry')}" class="btn">✉️ Direct Reply to ${name}</a>
-          <a href="http://localhost:5000/admin" class="btn-ghost" style="margin-left: 8px;">⚡ Open Admin Portal</a>
+          <a href="https://ratulshee.me/admin" class="btn-ghost" style="margin-left: 8px;">⚡ Open Admin Portal</a>
         </div>
       </div>
       <div class="footer">
-        Automated real-time notification delivered by Ratul Shee Portfolio MERN System.
+        Automated real-time notification delivered by Ratul Shee Portfolio &bull; <a href="https://ratulshee.me" style="color: #39ff9c; text-decoration: none;">ratulshee.me</a>
       </div>
     </div>
   </body>
@@ -253,7 +253,7 @@ function formatVisitorReceiptHtml(name, subject, message) {
         <p>Best regards,<br><strong>Ratul Shee</strong><br><span style="color:#94a3b8; font-size: 13px;">Full-Stack MERN Developer &bull; Chandannagar, India</span></p>
       </div>
       <div class="footer">
-        Ratul Shee Portfolio &bull; <a href="mailto:ratulshee6@gmail.com" style="color: #38bdf8; text-decoration: none;">ratulshee6@gmail.com</a>
+        <a href="https://ratulshee.me" style="color: #39ff9c; text-decoration: none;">ratulshee.me</a> &bull; <a href="mailto:ratulshee6@gmail.com" style="color: #38bdf8; text-decoration: none;">ratulshee6@gmail.com</a>
       </div>
     </div>
   </body>
