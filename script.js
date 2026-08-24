@@ -23,6 +23,19 @@ function initPortfolioApp() {
     }
   }
 
+  // Unlock Web Audio API on first user interaction gesture (crucial for iOS Safari & mobile Chrome)
+  const unlockAudio = () => {
+    initAudio();
+    document.removeEventListener('touchstart', unlockAudio);
+    document.removeEventListener('touchend', unlockAudio);
+    document.removeEventListener('pointerdown', unlockAudio);
+    document.removeEventListener('click', unlockAudio);
+  };
+  document.addEventListener('touchstart', unlockAudio, { passive: true });
+  document.addEventListener('touchend', unlockAudio, { passive: true });
+  document.addEventListener('pointerdown', unlockAudio, { passive: true });
+  document.addEventListener('click', unlockAudio, { passive: true });
+
   function playSynthSound(type) {
     if (!sfxEnabled) return;
     try {
