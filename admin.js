@@ -99,11 +99,36 @@ if (logoutBtn) {
   });
 }
 
-// 2. Navigation Tabs
+// 2. Navigation Tabs & Mobile Sidebar
 const navItems = document.querySelectorAll('.sidebar-menu .nav-item');
 const tabContents = document.querySelectorAll('.tab-content');
 const tabTitle = document.getElementById('tabTitle');
 const tabSubtitle = document.getElementById('tabSubtitle');
+const adminSidebar = document.querySelector('.admin-sidebar');
+const mobileSidebarToggle = document.getElementById('mobileSidebarToggle');
+const adminSidebarBackdrop = document.getElementById('adminSidebarBackdrop');
+
+function toggleMobileSidebar(show) {
+  if (!adminSidebar) return;
+  const isOpen = adminSidebar.classList.contains('open');
+  const shouldOpen = show !== undefined ? show : !isOpen;
+
+  if (shouldOpen) {
+    adminSidebar.classList.add('open');
+    if (adminSidebarBackdrop) adminSidebarBackdrop.classList.add('active');
+  } else {
+    adminSidebar.classList.remove('open');
+    if (adminSidebarBackdrop) adminSidebarBackdrop.classList.remove('active');
+  }
+}
+
+if (mobileSidebarToggle) {
+  mobileSidebarToggle.addEventListener('click', () => toggleMobileSidebar());
+}
+
+if (adminSidebarBackdrop) {
+  adminSidebarBackdrop.addEventListener('click', () => toggleMobileSidebar(false));
+}
 
 const tabMeta = {
   overview:  { title: 'Overview Dashboard', sub: 'Real-time statistics, inquiries, and email dispatch' },
@@ -132,6 +157,9 @@ navItems.forEach(item => {
 
     if (tabKey === 'messages') loadMessages();
     if (tabKey === 'settings') checkSmtpStatus();
+
+    // Auto-close sidebar on mobile after selecting tab
+    toggleMobileSidebar(false);
   });
 });
 

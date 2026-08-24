@@ -212,13 +212,41 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   /* =========================================================
-     3. Theme Accent Color Switcher
+     3. Theme Accent Color Switcher & Mobile Nav Toggle
      ========================================================= */
   const themeTriggerBtn = document.getElementById('themeTriggerBtn');
   const themePopup = document.getElementById('themePopup');
   const themeCloseBtn = document.getElementById('themeCloseBtn');
   const themeOpts = document.querySelectorAll('.theme-opt');
   const themeDotPreview = document.getElementById('themeDotPreview');
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = navLinks.classList.toggle('open');
+      navToggle.setAttribute('aria-expanded', isOpen);
+      navToggle.classList.toggle('active', isOpen);
+      playSynthSound('click');
+    });
+
+    navLinks.querySelectorAll('.nav-link').forEach(link => {
+      link.addEventListener('click', () => {
+        navLinks.classList.remove('open');
+        navToggle.classList.remove('active');
+        navToggle.setAttribute('aria-expanded', 'false');
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) {
+        navLinks.classList.remove('open');
+        navToggle.classList.remove('active');
+        navToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
 
   let currentTheme = localStorage.getItem('ratul_portfolio_theme') || 'emerald';
 

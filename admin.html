@@ -50,7 +50,7 @@
         <div class="admin-brand">
           <span class="brand-bracket">&lt;</span><span class="brand-name">Ratul</span><span class="brand-accent">.CMS</span><span class="brand-bracket">/&gt;</span>
         </div>
-        <span class="system-status-pill">● MongoDB Live</span>
+        <span class="system-status-pill">● Cloud DB Live</span>
       </div>
 
       <nav class="sidebar-menu">
@@ -84,18 +84,24 @@
       </div>
     </aside>
 
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div class="admin-sidebar-backdrop" id="adminSidebarBackdrop"></div>
+
     <!-- Main Content Area -->
     <main class="admin-main">
       <header class="main-topbar">
-        <div>
-          <h1 id="tabTitle">Overview Dashboard</h1>
-          <span class="topbar-sub" id="tabSubtitle">Real-time statistics, inquiries, and email dispatch</span>
+        <div style="display: flex; align-items: center; gap: 12px;">
+          <button class="mobile-sidebar-toggle" id="mobileSidebarToggle" aria-label="Toggle menu">☰</button>
+          <div>
+            <h1 id="tabTitle">Overview Dashboard</h1>
+            <span class="topbar-sub" id="tabSubtitle">Real-time statistics, inquiries, and email dispatch</span>
+          </div>
         </div>
         <div class="topbar-actions">
           <button class="btn-compose-topbar" id="topbarComposeBtn">
-            <span>✉️ Compose Email</span>
+            <span>✉️ Compose</span>
           </button>
-          <a href="/" target="_blank" class="btn-topbar-link">Open Live Site ↗</a>
+          <a href="/" target="_blank" class="btn-topbar-link">Live Site ↗</a>
         </div>
       </header>
 

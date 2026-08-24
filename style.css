@@ -2859,6 +2859,361 @@ h1, h2, h3, h4 {
   transition: transform 0.25s var(--ease);
 }
 
+/* =========================================================
+   COMPREHENSIVE MOBILE RESPONSIVENESS SYSTEM
+   Optimized for 320px, 375px, 414px, 768px, and 1024px screens
+   ========================================================= */
+
+/* Mobile Hamburger Toggle Animation */
+.nav-toggle.active span:nth-child(1) {
+  transform: translateY(7px) rotate(45deg);
+  background: var(--neon-green);
+}
+.nav-toggle.active span:nth-child(2) {
+  opacity: 0;
+  transform: translateX(-8px);
+}
+.nav-toggle.active span:nth-child(3) {
+  transform: translateY(-7px) rotate(-45deg);
+  background: var(--neon-green);
+}
+
+/* Breakpoint 1: Tablets & Small Laptops (max-width: 1024px) */
+@media (max-width: 1024px) {
+  .section { padding: 90px 20px; }
+  .bento-grid { gap: 16px; }
+  .bento-hero-story { grid-column: span 12; }
+  .bento-photo-card { grid-column: span 12; }
+  .bento-time-card   { grid-column: span 6; }
+  .bento-metrics-card{ grid-column: span 6; }
+  .bento-activity-card{ grid-column: span 12; }
+  .projects-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; }
+}
+
+/* Breakpoint 2: Mobile Devices & Tablets (max-width: 768px) */
+@media (max-width: 768px) {
+  /* Disable magnetic cursor on touch screens */
+  .cursor-dot, .cursor-ring { display: none !important; }
+  body { cursor: auto !important; }
+
+  /* Navigation Header */
+  .nav { padding: 12px 14px; }
+  .nav-inner { padding: 0 10px; }
+  .nav-links, .cmd-trigger-btn, .sound-toggle-btn { display: none; }
+  .nav-toggle { display: flex; }
+  .nav-cta { padding: 7px 14px; font-size: 0.76rem; }
+  .theme-trigger-btn { padding: 6px 10px; }
+  .theme-label-txt { display: none; }
+
+  /* Mobile Slide-down Nav Drawer */
+  .nav-links.open {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 68px;
+    left: 12px;
+    right: 12px;
+    background: rgba(8, 13, 22, 0.98);
+    backdrop-filter: blur(24px);
+    padding: 24px 20px;
+    gap: 16px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.8), 0 0 30px var(--neon-green-glow);
+    z-index: 1001;
+  }
+
+  .nav-link {
+    font-size: 1.05rem;
+    padding: 10px 14px;
+    border-radius: var(--radius-sm);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--border);
+  }
+
+  /* Theme Switcher Bottom Sheet on Mobile */
+  .theme-popup {
+    position: fixed;
+    top: auto;
+    bottom: 20px;
+    left: 14px;
+    right: 14px;
+    width: auto;
+    max-width: 480px;
+    margin: 0 auto;
+    box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.8), 0 0 30px var(--neon-green-glow);
+  }
+
+  /* Hero Section */
+  .hero {
+    padding: 110px 16px 50px;
+    min-height: auto;
+  }
+
+  .hero-inner { gap: 18px; width: 100%; }
+
+  .status-radar-pill {
+    font-size: 0.72rem;
+    padding: 6px 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .hero-name-gradient {
+    font-size: clamp(2.3rem, 9.5vw, 3.8rem);
+    line-height: 1.1;
+  }
+
+  .hero-tagline {
+    font-size: 0.94rem;
+    line-height: 1.6;
+    padding: 0 4px;
+  }
+
+  .hero-actions {
+    width: 100%;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .hero-actions .btn {
+    width: 100%;
+    justify-content: center;
+    padding: 14px;
+  }
+
+  .hero-terminal {
+    width: 100%;
+    border-radius: var(--radius-md);
+  }
+
+  .term-body {
+    max-height: 200px;
+    padding: 14px;
+    font-size: 0.78rem;
+  }
+
+  .term-hint { display: none; }
+
+  /* iOS Safari Auto-Zoom Fix (Must be 16px) */
+  .term-input, .form-input, .form-textarea, .cmd-input {
+    font-size: 16px !important;
+  }
+
+  /* Bento Grid */
+  .bento-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .bento-card {
+    padding: 22px 18px;
+    border-radius: var(--radius-md);
+  }
+
+  .photo-container {
+    width: 150px;
+    height: 150px;
+  }
+
+  .bento-time-card, .bento-metrics-card {
+    width: 100%;
+  }
+
+  .commit-matrix {
+    grid-template-columns: repeat(10, 1fr);
+    gap: 3px;
+  }
+
+  /* MERN Architecture Simulator */
+  .architecture-visualizer {
+    padding: 24px 16px;
+    border-radius: var(--radius-md);
+  }
+
+  .arch-pipeline {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .arch-wire { display: none; }
+
+  .arch-node {
+    width: 100%;
+    min-width: 100%;
+    padding: 18px 16px;
+  }
+
+  .arch-control-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    text-align: center;
+    padding: 14px;
+  }
+
+  .arch-control-bar .btn { width: 100%; justify-content: center; }
+
+  .arch-detail-drawer {
+    padding: 16px;
+  }
+
+  /* Featured Projects */
+  .head-split {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .project-filters {
+    width: 100%;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 8px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .project-filters::-webkit-scrollbar { display: none; }
+  .project-filters .filter-btn {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 8px 14px;
+    font-size: 0.76rem;
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .project-card-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .project-card-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Skills & Tech Stack */
+  .skills-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .skill-category-card {
+    padding: 20px 16px;
+  }
+
+  /* Timeline */
+  .timeline-container {
+    padding-left: 20px;
+  }
+  .timeline-marker {
+    left: -12px;
+  }
+  .timeline-card {
+    padding: 18px 16px;
+  }
+  .entry-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+
+  /* Contact Section */
+  .contact-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
+  .contact-card-modern {
+    padding: 14px 16px;
+  }
+
+  .glass-form {
+    padding: 22px 16px;
+    border-radius: var(--radius-md);
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+
+  /* Modals */
+  .resume-modal-card {
+    width: 96vw;
+    max-height: 92vh;
+    padding: 18px 14px;
+    margin: 4vh auto;
+    border-radius: var(--radius-md);
+  }
+
+  .resume-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .resume-actions-top {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .resume-skills-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .modal-content-card {
+    width: 96vw;
+    padding: 20px 16px;
+    border-radius: var(--radius-md);
+  }
+
+  .modal-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .modal-actions .btn {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cmd-palette-box {
+    width: 95vw;
+    border-radius: var(--radius-md);
+  }
+
+  /* Footer */
+  .footer { padding: 30px 16px; }
+  .footer-inner {
+    flex-direction: column;
+    text-align: center;
+    gap: 16px;
+  }
+  .cmd-shortcut-hint { display: none; }
+}
+
+/* Breakpoint 3: Ultra-Compact Phones (max-width: 400px) */
+@media (max-width: 400px) {
+  .section { padding: 75px 12px; }
+  .hero-name-gradient { font-size: 2.2rem; }
+  .digital-clock { font-size: 1.55rem; }
+  .metric-value { font-size: 1.8rem; }
+  .hero-roles-wrap { gap: 6px; }
+  .hero-role-badge { font-size: 0.72rem; padding: 4px 10px; }
+  .glass-form { padding: 18px 12px; }
+  .form-title-bar h3 { font-size: 1.1rem; }
+  .btn-submit { padding: 12px; font-size: 0.82rem; }
+}
+
 /* Print Styles */
 @media print {
   body * { visibility: hidden; }
