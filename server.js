@@ -349,7 +349,7 @@ app.post('/api/contact', async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: 'Message delivered, saved in MongoDB, and copy sent to email!',
+      message: 'Message delivered successfully and confirmation copy sent to email!',
       data: newMsg
     });
   } catch (err) {

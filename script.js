@@ -395,7 +395,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     typeWriter(bootLine1, 'load_environment --profile ratul_shee', 20, () => {
       if (bootLine2Wrap) bootLine2Wrap.style.opacity = '1';
-      typeWriter(bootLine2, 'connecting MongoDB & MERN backend services... [OK]', 18, () => {
+      typeWriter(bootLine2, 'initializing cloud database & backend API services... [OK]', 18, () => {
         if (bootLine3Wrap) bootLine3Wrap.style.opacity = '1';
         typeWriter(bootLine3, 'system status: 100% operational. welcome.', 18, () => {
           let p = 0;
@@ -421,8 +421,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const termHistory = document.getElementById('termHistory');
 
   let dynamicProjectsList = [
-    '1. FinTrack — Personal Expense & Budget Manager (MERN)',
-    '2. DevPulse — Content Studio & Markdown CMS (MERN)',
+    '1. FinTrack — Personal Expense & Budget Manager (Full-Stack)',
+    '2. DevPulse — Content Studio & Markdown CMS (Full-Stack)',
     '3. PromptMatrix — AI Prompt Workbench'
   ];
 
@@ -445,7 +445,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     skills: () => `Frontend: React.js, HTML5, CSS3, Tailwind, Redux
 Backend:  Node.js, Express.js, RESTful APIs, JWT
-Database: MongoDB Atlas, Mongoose
+Database: Cloud NoSQL & SQL Persistence Architecture
 Tools:    Git, Postman, AI Prompt Eng, Vite`,
 
     projects: () => dynamicProjectsList.join('\n'),
@@ -749,10 +749,10 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
       code: `// Express REST Route & JWT Guard\nrouter.post('/login', authLimiter, async (req, res) => {\n  const { username, password } = req.body;\n  const user = await User.findOne({ username });\n  const isMatch = await user.matchPassword(password);\n  res.json({ token: user.getSignedJwtToken() });\n});`
     },
     database: {
-      badge: 'Persistence Layer: MongoDB Atlas & Mongoose',
+      badge: 'Persistence Layer: Cloud NoSQL Database',
       title: 'Database Schema & Aggregation Pipeline',
-      desc: 'Scalable NoSQL document store with strict Mongoose schema validation, multi-field compound indexes for high-speed queries, and aggregation pipelines for analytics.',
-      code: `// Mongoose Query Aggregation\nconst stats = await Message.aggregate([\n  { $group: { _id: '$isRead', count: { $sum: 1 } } }\n]);`
+      desc: 'Scalable cloud document store with strict schema validation, multi-field compound indexes for high-speed queries, and aggregation pipelines for analytics.',
+      code: `// Database Query & Aggregation Pipeline\nconst stats = await Message.aggregate([\n  { $group: { _id: '$isRead', count: { $sum: 1 } } }\n]);`
     }
   };
 
@@ -786,21 +786,21 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
       setTimeout(() => {
         archNodes.forEach(n => n.classList.remove('active'));
         document.getElementById('nodeServer')?.classList.add('active');
-        archStatusMsg.textContent = '⚡ Node/Express: Validating payload & authentication...';
+        archStatusMsg.textContent = '⚡ API Gateway: Validating payload & authentication...';
         packet2.classList.add('firing');
       }, 500);
 
       setTimeout(() => {
         archNodes.forEach(n => n.classList.remove('active'));
         document.getElementById('nodeDatabase')?.classList.add('active');
-        archStatusMsg.textContent = '⚡ MongoDB Atlas: Document persisted to collection...';
+        archStatusMsg.textContent = '⚡ Cloud Database: Document persisted successfully...';
       }, 1000);
 
       setTimeout(() => {
         playSynthSound('success');
         archNodes.forEach(n => n.classList.remove('active'));
         document.getElementById('nodeClient')?.classList.add('active');
-        archStatusMsg.textContent = '✅ HTTP 200 OK (Round-trip: 22ms) — Synchronized with MongoDB!';
+        archStatusMsg.textContent = '✅ HTTP 200 OK (Round-trip: 22ms) — Transaction Committed!';
         showToast('🚀 Pipeline Transaction Completed: 200 OK (22ms)');
       }, 1500);
     });
@@ -1480,7 +1480,7 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
 
           if (formAlert) {
             formAlert.className = 'form-status-alert success';
-            formAlert.innerHTML = `✅ Thank you, <strong>${escapeHtml(name)}</strong>! Your message has been stored in MongoDB Atlas & a copy sent to your email. I'll get back to you shortly.`;
+            formAlert.innerHTML = `✅ Thank you, <strong>${escapeHtml(name)}</strong>! Your message has been received and saved. A confirmation copy has been sent to your email.`;
           }
           showToast('🚀 Message saved & email notification dispatched!');
 
