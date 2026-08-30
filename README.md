@@ -58,14 +58,3 @@ To deploy to production cloud hosting (e.g., **Render**, **Railway**, **DigitalO
    git remote add origin https://github.com/Ratul-Shee/portfolio.git
    git push -u origin main
    ```
-2. **Deploy on Render / Railway**:
-   - Create a new **Web Service** pointing to your repository.
-   - **Build Command:** `npm install`
-   - **Start Command:** `node server.js`
-   - **Set Environment Variables in Hosting Dashboard:**
-     - `PORT` = `5000` (or leave default provided by host)
-     - `MONGO_URI` = `mongodb+srv://ratulshee6_db_user:MFTfHZjEbKo6Xi5N@cluster0.7bmlhok.mongodb.net/portfolio_db?retryWrites=true&w=majority`
-     - `JWT_SECRET` = `ratul_shee_super_secret_jwt_key_2026_dev`
-     - `GMAIL_USER` = `ratulshee6@gmail.com`
-     - `GMAIL_APP_PASSWORD` = `okzvewmksrwsdnlq`
-     - `ADMIN_ALERT_EMAIL` = `ratulshee6@gmail.com`
