@@ -244,7 +244,7 @@ function initPortfolioApp() {
       playSynthSound('click');
     });
 
-    navLinks.querySelectorAll('.nav-link').forEach(link => {
+    navLinks.querySelectorAll('a, button').forEach(link => {
       link.addEventListener('click', () => {
         navLinks.classList.remove('open');
         navToggle.classList.remove('active');
@@ -333,7 +333,9 @@ function initPortfolioApp() {
     if (resumeModal) resumeModal.classList.remove('open');
   }
 
+  const drawerResumeBtn = document.getElementById('drawerResumeBtn');
   if (heroResumeBtn) heroResumeBtn.addEventListener('click', openResumeModal);
+  if (drawerResumeBtn) drawerResumeBtn.addEventListener('click', openResumeModal);
   if (resumeCloseBtn) resumeCloseBtn.addEventListener('click', closeResumeModal);
   if (resumeModal) {
     resumeModal.addEventListener('click', (e) => {
@@ -439,7 +441,7 @@ Tools:    Git, Postman, AI Prompt Eng, Vite`,
 
     projects: () => dynamicProjectsList.join('\n'),
 
-    about: () => `Pursuing B.Tech at Supreme Knowledge Foundation Group of Institutions (Graduating 2027). Focused on full-stack web applications and AI tools.`,
+    about: () => `Pursuing BCA at Supreme Knowledge Foundation Group of Institutions (Graduating 2027). Focused on full-stack web applications and AI tools.`,
 
     resume: () => {
       openResumeModal();
@@ -1040,9 +1042,17 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
           p.y += mdy * 0.008;
         }
 
+        const themeParticleColors = {
+          emerald: { dot: 'rgba(57, 255, 156, 0.45)', line: 'rgba(56, 189, 248,' },
+          violet:  { dot: 'rgba(192, 132, 252, 0.45)', line: 'rgba(129, 140, 248,' },
+          cyan:    { dot: 'rgba(0, 240, 255, 0.45)', line: 'rgba(56, 189, 248,' },
+          amber:   { dot: 'rgba(245, 158, 11, 0.45)', line: 'rgba(251, 191, 36,' }
+        };
+        const palette = themeParticleColors[currentTheme] || themeParticleColors.emerald;
+
         ctx.beginPath();
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = 'rgba(57, 255, 156, 0.45)';
+        ctx.fillStyle = palette.dot;
         ctx.fill();
 
         for (let j = i + 1; j < particles.length; j++) {
@@ -1055,7 +1065,7 @@ LinkedIn: <a href="https://www.linkedin.com/in/ratul-shee/" target="_blank" clas
             ctx.beginPath();
             ctx.moveTo(p.x, p.y);
             ctx.lineTo(q.x, q.y);
-            ctx.strokeStyle = `rgba(56, 189, 248, ${0.14 * (1 - dist / 130)})`;
+            ctx.strokeStyle = `${palette.line} ${0.14 * (1 - dist / 130)})`;
             ctx.lineWidth = 1;
             ctx.stroke();
           }

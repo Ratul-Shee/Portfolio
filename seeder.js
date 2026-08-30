@@ -159,7 +159,7 @@ const seedData = async () => {
       await Timeline.insertMany([
         {
           institution: 'Supreme Knowledge Foundation Group of Institutions',
-          degree: 'Bachelor of Technology (B.Tech) Degree Program',
+          degree: 'Bachelor of Computer Applications (BCA) Degree Program',
           dates: '2024 — 2027',
           badge: 'In Progress',
           description: 'Specializing in computer systems, algorithms, database architectures, and software engineering. Building full-stack web applications alongside rigorous coursework.',
